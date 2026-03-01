@@ -90,6 +90,26 @@ npm run dev
 
 ---
 
+## ⚙️ Environment Variables
+
+If you are running from source or manual setup, create a `.env` file in the `backend/` directory.
+
+```bash
+# Required
+GEMINI_API_KEY=your_gemini_api_key_here
+MEMORY_ENCRYPTION_KEY=your_32_char_secret_key
+
+# Optional
+MONGO_URI=mongodb://localhost:27017/samarthya
+PORT=5000
+USE_OLLAMA=false
+ACTIVE_PROVIDER=gemini # or ollama
+```
+
+*Note: The `samarthya onboard` command handles these for you automatically!*
+
+---
+
 ## 🔌 Developing Plugins
 
 Giving your AI a new Superpower is simple. Create a `.js` file in your plugins directory:
