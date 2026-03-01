@@ -1,0 +1,49 @@
+{
+    "name": "samarthya-bot",
+    "version": "1.0.1",
+    "description": "Privacy-First Local Agentic OS & Command Center",
+    "main": "backend/server.js",
+    "bin": {
+        "samarthya": "backend/bin/samarthya.js"
+    },
+    "scripts": {
+        "start": "node backend/server.js"
+    },
+    "dependencies": {
+        "@google/genai": "^1.43.0",
+        "bcryptjs": "^3.0.3",
+        "cors": "^2.8.6",
+        "dotenv": "^17.3.1",
+        "express": "^5.2.1",
+        "helmet": "^8.1.0",
+        "jsonwebtoken": "^9.0.3",
+        "mongoose": "^9.2.3",
+        "morgan": "^1.10.1",
+        "node-cron": "^4.2.1",
+        "node-crypto": "^1.0.0",
+        "node-os-utils": "^2.0.1",
+        "nodemailer": "^8.0.1",
+        "os-utils": "^0.0.14",
+        "puppeteer-core": "^24.37.5",
+        "screenshot-desktop": "^1.15.3",
+        "socket.io": "^4.8.3",
+        "uuid": "^13.0.0"
+    },
+    "keywords": [
+        "ai",
+        "agent",
+        "os",
+        "local",
+        "samarthya-bot",
+        "ollama"
+    ],
+    "author": "Bishnu Sahu",
+    "license": "MIT",
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mebishnusahu0595/SamarthyaBot.git"
+    }
+}
