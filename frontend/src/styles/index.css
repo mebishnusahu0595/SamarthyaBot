@@ -1,0 +1,598 @@
+/* ============================================
+   SamarthyaBot - Global Design System
+   Privacy-first Personal AI Operator
+   ============================================ */
+
+:root {
+  /* Color Palette - Indian Premium Dark Theme */
+  --bg-primary: #0D0D0D;
+  --bg-secondary: #111118;
+  --bg-tertiary: #161624;
+  --bg-card: #1a1a2e;
+  --bg-hover: #22223a;
+  --bg-input: #0f0f1e;
+
+  /* Indian-Inspired Accent Colors */
+  --accent-saffron: #FF9933;
+  --accent-saffron-glow: rgba(255, 153, 51, 0.25);
+  --accent-navy: #000080;
+  --accent-green: #138808;
+  --accent-green-glow: rgba(19, 136, 8, 0.2);
+  --accent-primary: #FF9933;
+  --accent-secondary: #e68a2e;
+  --accent-white: #ffffff;
+  --accent-gold: #f5c842;
+  --accent-teal: #14b8a6;
+  --accent-rose: #f43f5e;
+  --accent-indigo: #6366f1;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FF9933 0%, #e68a2e 50%, #f5c842 100%);
+  --gradient-indian: linear-gradient(135deg, #FF9933 0%, #ffffff 50%, #138808 100%);
+  --gradient-navy: linear-gradient(135deg, #000080 0%, #1a1a6e 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255, 153, 51, 0.06) 0%, rgba(19, 136, 8, 0.03) 100%);
+  --gradient-dark: linear-gradient(180deg, #0D0D0D 0%, #111118 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(255, 153, 51, 0.08) 0%, rgba(0, 0, 128, 0.05) 50%, rgba(19, 136, 8, 0.04) 100%);
+  --gradient-card-hover: linear-gradient(135deg, rgba(255, 153, 51, 0.1) 0%, rgba(255, 153, 51, 0.02) 100%);
+
+  /* Text */
+  --text-primary: #f2f2f8;
+  --text-secondary: #a8a8c0;
+  --text-muted: #6b6b8a;
+  --text-accent: #FF9933;
+
+  /* Borders */
+  --border-primary: rgba(255, 153, 51, 0.15);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 153, 51, 0.35);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 24px rgba(255, 153, 51, 0.12);
+  --shadow-glow-strong: 0 0 48px rgba(255, 153, 51, 0.22);
+  --shadow-green-glow: 0 0 20px rgba(19, 136, 8, 0.15);
+
+  /* Typography */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-hindi: 'Noto Sans Devanagari', 'Inter', sans-serif;
+
+  /* Spacing */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================
+   Reset & Base
+   ============================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-primary);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 153, 51, 0.2);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-saffron);
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(255, 153, 51, 0.15);
+  }
+
+  50% {
+    box-shadow: 0 0 25px rgba(255, 153, 51, 0.35);
+  }
+}
+
+@keyframes typing {
+
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes voicePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 153, 51, 0.5);
+  }
+
+  70% {
+    box-shadow: 0 0 0 20px rgba(255, 153, 51, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 153, 51, 0);
+  }
+}
+
+@keyframes pulseAlarm {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  }
+
+  100% {
+    transform: scale(1.02);
+    box-shadow: 0 0 40px rgba(255, 153, 51, 0.6);
+  }
+}
+
+@keyframes ringAlarm {
+  0% {
+    transform: rotate(0);
+  }
+
+  25% {
+    transform: rotate(15deg);
+  }
+
+  50% {
+    transform: rotate(-15deg);
+  }
+
+  75% {
+    transform: rotate(10deg);
+  }
+
+  100% {
+    transform: rotate(-10deg);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.4s ease-out;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.6s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+.glass {
+  background: rgba(26, 26, 46, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-strong {
+  background: rgba(13, 13, 13, 0.85);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid var(--border-primary);
+}
+
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-indian {
+  background: var(--gradient-indian);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   Button Styles
+   ============================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.01em;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 10%, transparent 60%);
+  transform: scale(0);
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.btn:active::after {
+  transform: scale(4);
+  opacity: 0;
+  transition: 0s;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: #0D0D0D;
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-glow-strong);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ============================================
+   Input Styles
+   ============================================ */
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
+  transition: all var(--transition-normal);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--accent-saffron);
+  box-shadow: 0 0 0 3px var(--accent-saffron-glow);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ============================================
+   Badge Styles
+   ============================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge-low {
+  background: rgba(19, 136, 8, 0.12);
+  color: #138808;
+  border: 1px solid rgba(19, 136, 8, 0.25);
+}
+
+.badge-medium {
+  background: rgba(255, 153, 51, 0.12);
+  color: #FF9933;
+  border: 1px solid rgba(255, 153, 51, 0.25);
+}
+
+.badge-high {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.badge-critical {
+  background: rgba(244, 63, 94, 0.12);
+  color: #f43f5e;
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  animation: glow 2s infinite;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+}
