@@ -5,12 +5,12 @@
 
 :root {
   /* Color Palette - Indian Premium Dark Theme */
-  --bg-primary: #0D0D0D;
-  --bg-secondary: #111118;
-  --bg-tertiary: #161624;
-  --bg-card: #1a1a2e;
-  --bg-hover: #22223a;
-  --bg-input: #0f0f1e;
+  --bg-primary: #06060a;
+  --bg-secondary: #0e0e14;
+  --bg-tertiary: #12121c;
+  --bg-card: #0e0e16;
+  --bg-hover: #14141e;
+  --bg-input: #0a0a12;
 
   /* Indian-Inspired Accent Colors */
   --accent-saffron: #FF9933;
@@ -36,15 +36,15 @@
   --gradient-card-hover: linear-gradient(135deg, rgba(255, 153, 51, 0.1) 0%, rgba(255, 153, 51, 0.02) 100%);
 
   /* Text */
-  --text-primary: #f2f2f8;
-  --text-secondary: #a8a8c0;
-  --text-muted: #6b6b8a;
+  --text-primary: #f0f0ff;
+  --text-secondary: #8888a8;
+  --text-muted: #3a3a4e;
   --text-accent: #FF9933;
 
   /* Borders */
-  --border-primary: rgba(255, 153, 51, 0.15);
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-hover: rgba(255, 153, 51, 0.35);
+  --border-primary: rgba(255, 153, 51, 0.18);
+  --border-subtle: #1e1e28;
+  --border-hover: rgba(255, 153, 51, 0.40);
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
