@@ -1,92 +1,87 @@
 <div align="center">
+  <img src="backend/public/favicon.svg" width="80" height="80" alt="SamarthyaBot Logo" />
   <h1>🧠 SamarthyaBot</h1>
-  <p><strong>Privacy-First Local Agentic OS & Command Center</strong></p>
+  <p><strong>The Open-Source Local Agentic OS & AI Command Center</strong></p>
   
   <p>
-    An intelligent, extensible, and localized AI operator built for local-first execution. Out-of-the-box support for API usage (Gemini) or completely offline execution via Ollama. It runs commands, handles background jobs, remembers you securely, and performs multi-step autonomous planning.
+    Run multi-step autonomous AI workflows natively on your machine.
+    <br/><b>Privacy-First • Completely Local • Highly Extensible</b>
+  </p>
+
+  <p>
+    <a href="https://www.npmjs.com/package/samarthya-bot"><img src="https://img.shields.io/npm/v/samarthya-bot?color=orange&style=flat-square" alt="NPM Version" /></a>
+    <a href="https://github.com/mebishnusahu0595/SamarthyaBot"><img src="https://img.shields.io/github/stars/mebishnusahu0595/SamarthyaBot?style=flat-square&color=yellow" alt="GitHub Stars" /></a>
+    <img src="https://img.shields.io/npm/l/samarthya-bot?style=flat-square&color=blue" alt="License" />
   </p>
 </div>
 
 <hr/>
 
-## 🚀 The Vision: A Developer's Platform, Not Just a Chatbot
+## 🚀 Instant Setup
 
-Most AI tools are single-turn chat interfaces. SamarthyaBot is built as a **Platform OS**. It features a modular Plugin Engine, a Background CRON executor, and a dedicated UI Control Center. 
+SamarthyaBot is now distributed as a global NPM package. No manual cloning or complex setup required.
 
-You don't just ask SamarthyaBot questions; you *delegate tasks* to it.
-
-## 🌟 Key "Level 2" Features
-
-- 🛑 **Control Center UI**: A full dashboard monitoring the health of the agent, loaded plugins, RAM usage, and autonomous loops.
-- 🔁 **Autonomous Background Engine**: Schedule tasks (e.g. "Monitor this folder every 10 mins") and let the agent work silently in the background. Features a **Big Red Kill Switch** for emergency halts.
-- 🔌 **Dynamic Plugin Marketplace**: Drop a `.js` file into `~/SamarthyaBot_Files/plugins/`, and the agent automatically learns the new tool on start.
-- 📸 **Screen Understanding**: Native capability to capture desktop screenshots and pipe them into Vision models.
-- 🔐 **Encrypted Memory Vault**: AES-256-CBC local encryption for any API keys, tokens, or PII the agent decides it needs to remember.
-- 🇮🇳 **Indian Context**: Native prompt handling for GST due dates, UPI link generation, and Hinglish/Hindi fluency.
-
-## 🛠️ Architecture
-
-It uses a monolithic structure right now, preparing for a modular NPM package evolution:
-- **Backend**: Node.js, Express, MongoDB (Local), PM2 for Daemonizing.
-- **Frontend**: React, Vite, Lucide-Icons.
-- **Agent Loop**: A custom ReAct-inspired (`Reason`, `Act`, `Observe`) multi-step autonomous planner.
-
-## 📦 Quick Start Guide
-
-**Prerequisites:** Node.js (v20+), MongoDB running locally, Git.
-
-1. **Clone & Install:**
 ```bash
-git clone https://github.com/mebishnusahu0595/SamarthyaBot.git
-cd SamarthyaBot/backend
-npm install
-cd ../frontend
-npm install
-```
+# 1. Install globally
+npm install -g samarthya-bot
 
-2. **Environment Variables:**
-Duplicate the config file in the backend.
-```bash
-cd ../backend
-cp .env.example .env
-```
-Edit `.env` and fill in your `GEMINI_API_KEY` and a random string for `MEMORY_ENCRYPTION_KEY`.
+# 2. Run the onboarding wizard
+samarthya onboard
 
-3. **Build Frontend & Start:**
-```bash
-cd ../frontend
-npm run build
-cp -r dist/* ../backend/public/
-cd ../backend
-npm start   # Or use `node bin/samarthya.js start` if you have it linked globally
+# 3. Start the Agent Engine
+samarthya gateway
 ```
+*Access your control center at `http://localhost:5000` after starting the gateway.*
 
-4. **Access the Control Center:**
-Open `http://localhost:5000` in your browser.
+---
+
+## 🌟 Why SamarthyaBot?
+
+Most AI tools are just chat boxes. SamarthyaBot is a **Local Operating System for AI Agents**. It doesn't just talk; it **does things**.
+
+- 🛑 **Control Center UI**: A sleek dashboard to monitor agent health, RAM usage, and active autonomous loops.
+- 🔁 **Autonomous Planning**: Native ReAct-inspired (`Reason`, `Act`, `Observe`) engine that breaks complex goals into executable tool-steps.
+- 🕒 **Background Jobs**: Schedule tasks like "Monitor my downloads folder" or "Check GST deadlines every 4 hours".
+- 🔌 **Plugin Architecture**: Drop any JS tool into your local plugins folder, and the agent learns that skill instantly.
+- 📸 **Screen Intelligence**: Capture and analyze your desktop state for visual-contextual automation.
+- 🔐 **Encrypted Vault**: AES-256-CBC local encryption for your API keys and sensitive memories.
+- 🇮🇳 **Indian Flavour**: Built-in logic for UPI links, IRCTC bookings, GST handling, and Hinglish understanding.
+
+## 🛠️ CLI Commands
+
+| Command | Description |
+| :--- | :--- |
+| `samarthya onboard` | Interactive setup for API keys (Gemini/Ollama) and database. |
+| `samarthya gateway` | Starts the backend server and agent engine. |
+| `samarthya status` | Check if the agent and background jobs are running. |
+| `samarthya stop` | Gracefully shut down all background agent processes. |
+| `samarthya model [name]` | Quickly switch between LLM providers (e.g. `ollama`, `gemini`). |
 
 ## 🔌 Developing Plugins
 
-Want to give your AI a new Superpower? Just make a simple JS file in `~/SamarthyaBot_Files/plugins/my_tool.js`:
+Giving your AI a new "Superpower" is as easy as writing a simple JS file:
 
 ```javascript
+// ~/SamarthyaBot_Files/plugins/greet.js
 module.exports = {
     name: 'greet_user',
-    description: 'Greets the user nicely',
-    riskLevel: 'low',
-    category: 'tool',
+    description: 'Greets the user with a custom message',
     parameters: {
-        name: { type: 'string', required: true, description: 'User name' }
+        name: { type: 'string', required: true }
     },
-    execute: async (args, userContext) => {
-        return { success: true, result: `Hello ${args.name}!` };
+    execute: async (args) => {
+        return { success: true, result: `Namaste ${args.name}! I am SamarthyaBot.` };
     }
 };
 ```
-Restart the server, and the agent will instantly know how to greet users using your custom logic!
+Drop it in the folder, restart the gateway, and your agent is now a specialized greeter!
 
-## 🔐 Privacy Guarantee
+## �️ Privacy Guarantee
 
-All your conversations, file reads, and parsed memories remain completely local in your MongoDB database and `~/SamarthyaBot_Files/` directory. API data is only sent to the LLM Provider you specific (Gemini or Local Ollama).
+Your data **never** leaves your hardware.
+- **Local DB**: All chats and memories are stored on your local MongoDB.
+- **Local Execution**: Use **Ollama** for 100% offline air-gapped intelligence.
+- **No Tracking**: We don't collect usage analytics. Your agent is yours.
 
 ## 📄 License
-MIT License
+MIT License • Built with ❤️ in India by [Bishnu Sahu](https://github.com/mebishnusahu0595)
