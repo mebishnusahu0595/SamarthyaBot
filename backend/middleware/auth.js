@@ -1,25 +1,27 @@
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const auth = async (req, res, next) => {
     try {
-        const token = req.header('Authorization')?.replace('Bearer ', '') || req.query.token;
-
-        if (!token) {
-            return res.status(401).json({ success: false, message: 'Authentication required' });
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.id).select('-password');
+        // Local OS Mode: Bypass JWT Authentication 
+        // We automatically find or create a default "Local Admin" user.
+        let user = await User.findOne({ email: 'admin@samarthya.local' });
 
         if (!user) {
-            return res.status(401).json({ success: false, message: 'User not found' });
+            user = new User({
+                name: 'System Admin',
+                email: 'admin@samarthya.local',
+                password: 'no_password_needed_for_local',
+                role: 'admin',
+                activePack: 'developer'
+            });
+            await user.save();
         }
 
         req.user = user;
         next();
     } catch (error) {
-        res.status(401).json({ success: false, message: 'Invalid token' });
+        console.error("Auth Middleware Error:", error);
+        res.status(500).json({ success: false, message: 'Local Auth Error', error: error.message });
     }
 };
 

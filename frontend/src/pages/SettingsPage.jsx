@@ -7,8 +7,6 @@ export default function SettingsPage({ user, onUpdate }) {
         name: user?.name || '',
         language: user?.language || 'hinglish',
         city: user?.city || '',
-        workType: user?.workType || 'personal',
-        activePack: user?.activePack || 'personal',
         permissions: user?.permissions || {
             fileAccess: 'ask',
             emailAccess: 'ask',
@@ -73,29 +71,14 @@ export default function SettingsPage({ user, onUpdate }) {
                                 placeholder="Your name"
                             />
                         </div>
-                        <div style={styles.fieldRow}>
-                            <div style={styles.field}>
-                                <label style={styles.label}>City / शहर</label>
-                                <input
-                                    style={styles.input}
-                                    value={formData.city}
-                                    onChange={e => setFormData({ ...formData, city: e.target.value })}
-                                    placeholder="Mumbai, Delhi, etc."
-                                />
-                            </div>
-                            <div style={styles.field}>
-                                <label style={styles.label}>Work Type</label>
-                                <select
-                                    style={styles.input}
-                                    value={formData.workType}
-                                    onChange={e => setFormData({ ...formData, workType: e.target.value })}
-                                >
-                                    <option value="personal">🏠 Personal</option>
-                                    <option value="student">🎓 Student</option>
-                                    <option value="business">🏢 Business</option>
-                                    <option value="developer">👨‍💻 Developer</option>
-                                </select>
-                            </div>
+                        <div style={styles.field}>
+                            <label style={styles.label}>City / शहर</label>
+                            <input
+                                style={styles.input}
+                                value={formData.city}
+                                onChange={e => setFormData({ ...formData, city: e.target.value })}
+                                placeholder="Mumbai, Delhi, etc."
+                            />
                         </div>
                     </div>
                 </div>
@@ -131,36 +114,7 @@ export default function SettingsPage({ user, onUpdate }) {
                     </div>
                 </div>
 
-                {/* Tool Pack Section */}
-                <div style={styles.section}>
-                    <div style={styles.sectionHeader}>
-                        <Shield size={20} style={{ color: 'var(--accent-teal)' }} />
-                        <h2 style={styles.sectionTitle}>Active Pack / टूल पैक</h2>
-                    </div>
-                    <div style={styles.sectionBody}>
-                        <div style={styles.packGrid}>
-                            {[
-                                { id: 'personal', icon: '🏠', name: 'Personal', desc: 'Bills, files, reminders' },
-                                { id: 'student', icon: '🎓', name: 'Student', desc: 'Study, notes, exams' },
-                                { id: 'business', icon: '🏢', name: 'Business', desc: 'GST, invoices, email' },
-                                { id: 'developer', icon: '👨‍💻', name: 'Developer', desc: 'Code, logs, GitHub' },
-                            ].map(pack => (
-                                <button
-                                    key={pack.id}
-                                    onClick={() => setFormData({ ...formData, activePack: pack.id })}
-                                    style={{
-                                        ...styles.packCard,
-                                        ...(formData.activePack === pack.id ? styles.packCardActive : {})
-                                    }}
-                                >
-                                    <span style={styles.packIcon}>{pack.icon}</span>
-                                    <span style={styles.packName}>{pack.name}</span>
-                                    <span style={styles.packDesc}>{pack.desc}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+
 
                 {/* Permissions Section */}
                 <div style={styles.section}>

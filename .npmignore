@@ -1,0 +1,8 @@
+frontend/
+.env
+.pm2/
+SamarthyaBot_Files/
+.git/
+.github/
+node_modules/
+backend/node_modules/

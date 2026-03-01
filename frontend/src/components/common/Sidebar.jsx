@@ -9,7 +9,7 @@ const navItems = [
     { icon: LayoutDashboard, label: 'Control Center', labelHi: 'डैशबोर्ड', path: '/' },
     { icon: MessageSquare, label: 'Chat', labelHi: 'चैट', path: '/chat' },
     { icon: HardDrive, label: 'My Stuff', labelHi: 'मेरा डेटा', path: '/my-stuff' },
-    { icon: Wrench, label: 'Tool Packs', labelHi: 'टूल पैक्स', path: '/tools' },
+    { icon: Wrench, label: 'Modules', path: '/tools' },
     { icon: Zap, label: 'Integrations', labelHi: 'इंटीग्रेशन', path: '/integrations' },
     { icon: Shield, label: 'Audit Log', labelHi: 'ऑडिट लॉग', path: '/audit' },
     { icon: Settings, label: 'Settings', labelHi: 'सेटिंग्स', path: '/settings' },
@@ -79,20 +79,11 @@ export default function Sidebar({ user, isOpen, onToggle, onLogout }) {
                             {(user?.name || 'U').charAt(0).toUpperCase()}
                         </div>
                         <div style={styles.userText}>
-                            <div style={styles.userName}>{user?.name || 'User'}</div>
-                            <div style={styles.userPack}>
-                                {user?.activePack === 'student' ? '🎓' :
-                                    user?.activePack === 'business' ? '🏢' :
-                                        user?.activePack === 'developer' ? '👨‍💻' : '🏠'}
-                                {' '}{user?.activePack || 'personal'} pack
-                            </div>
+                            <div style={styles.userName}>{user?.name || 'Local Admin'}</div>
+                            <div style={styles.userStatus}>AI Agent Operator</div>
                         </div>
                     </div>
                 )}
-                <button onClick={onLogout} style={styles.logoutBtn} title="Logout">
-                    <LogOut size={18} />
-                    {isOpen && <span>Logout</span>}
-                </button>
             </div>
         </aside>
     );
@@ -244,10 +235,9 @@ const styles = {
         fontSize: '0.85rem',
         color: 'var(--text-primary)',
     },
-    userPack: {
+    userStatus: {
         fontSize: '0.75rem',
         color: 'var(--text-muted)',
-        textTransform: 'capitalize',
     },
     logoutBtn: {
         display: 'flex',

@@ -13,7 +13,6 @@ export default function DashboardPage({ user }) {
     const [platformStatus, setPlatformStatus] = useState(null);
     const [backgroundJobs, setBackgroundJobs] = useState([]);
     const [recentConvs, setRecentConvs] = useState([]);
-    const [packs, setPacks] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -39,14 +38,12 @@ export default function DashboardPage({ user }) {
     const loadData = async () => {
         setLoading(true);
         try {
-            const [convsRes, packsRes, statsRes] = await Promise.all([
+            const [convsRes, statsRes] = await Promise.all([
                 chatAPI.getConversations().catch(() => ({ data: { conversations: [] } })),
-                toolsAPI.getPacks().catch(() => ({ data: { packs: [] } })),
                 auditAPI.getStats().catch(() => ({ data: { stats: { totalActions: 0, byCategory: {}, byStatus: {} } } }))
             ]);
 
             setRecentConvs(convsRes.data.conversations?.slice(0, 5) || []);
-            setPacks(packsRes.data.packs || []);
             setStats(statsRes.data.stats);
 
             await loadPlatformData();
