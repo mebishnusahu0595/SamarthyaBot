@@ -446,7 +446,7 @@ export default function HomePage() {
                 {/* ════════════════ FEATURES ════════════════ */}
                 <section id="features" style={{ background: dark ? '#07070e' : '#f4f4fa', padding: '96px 24px' }}>
                     <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-                        <div style={{ textAlign: 'center', marginBottom: 60 }}>
+                        <div style={{ textAlign: 'center', marginBottom: 40 }}>
                             <SectionLabel dark={dark}>Capabilities</SectionLabel>
                             <h2 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', fontWeight: 900, color: primary, marginTop: 14, letterSpacing: '-1.5px' }}>
                                 Built Different. Runs Locally.
@@ -455,6 +455,56 @@ export default function HomePage() {
                                 Everything you need to run an autonomous AI agent on your own hardware.
                             </p>
                         </div>
+
+                        {/* God Mode Example Grid */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24, marginBottom: 50 }}>
+                            <div className="card-hover" style={{ padding: '24px', borderRadius: 14, border: `1px solid ${border}`, background: dark ? '#0e0e16' : '#ffffff' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+                                    <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Globe size={18} />
+                                    </div>
+                                    <div>
+                                        <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: primary }}>Browser RPA</h3>
+                                        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: 1 }}>Puppeteer-Core</div>
+                                    </div>
+                                </div>
+                                <div style={{ background: dark ? '#0a0a0f' : '#f0f0f5', padding: '12px', borderRadius: 8, border: `1px solid ${border}`, color: muted, fontSize: '0.75rem', fontWeight: 600, marginBottom: 16 }}>
+                                    <span style={{ color: primary }}>"Go to zerodha, click login, and read my portfolio."</span>
+                                </div>
+                            </div>
+
+                            <div className="card-hover" style={{ padding: '24px', borderRadius: 14, border: `1px solid ${border}`, background: dark ? '#0e0e16' : '#ffffff' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+                                    <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(250, 204, 21, 0.1)', color: '#facc15', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Terminal size={18} />
+                                    </div>
+                                    <div>
+                                        <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: primary }}>Go Streaming</h3>
+                                        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#facc15', textTransform: 'uppercase', letterSpacing: 1 }}>High-Perf Sub-Node</div>
+                                    </div>
+                                </div>
+                                <div style={{ background: dark ? '#0a0a0f' : '#f0f0f5', padding: '12px', borderRadius: 8, border: `1px solid ${border}`, color: muted, fontSize: '0.75rem', fontWeight: 600, marginBottom: 16 }}>
+                                    <span style={{ color: primary }}>"Run a heavy cargo build and stream the output to me."</span>
+                                </div>
+                            </div>
+
+                            <div className="card-hover" style={{ padding: '24px', borderRadius: 14, border: `1px solid ${border}`, background: dark ? '#0e0e16' : '#ffffff' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+                                    <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Server size={18} />
+                                    </div>
+                                    <div>
+                                        <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: primary }}>Remote SSH</h3>
+                                        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#ef4444', textTransform: 'uppercase', letterSpacing: 1 }}>DevOps Control</div>
+                                    </div>
+                                </div>
+                                <div style={{ background: dark ? '#0a0a0f' : '#f0f0f5', padding: '12px', borderRadius: 8, border: `1px solid ${border}`, color: muted, fontSize: '0.75rem', fontWeight: 600, marginBottom: 16 }}>
+                                    <span style={{ color: primary }}>"SSH into 1.2.3.4 and pull the latest github repo."</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Standard Features grid */}
                         <div className="feat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
                             {FEATURES.map((f, i) => (
                                 <div key={i} className="card-hover" style={{ padding: '28px 24px', borderRadius: 14, border: `1px solid ${border}`, background: dark ? '#0e0e16' : '#ffffff', display: 'flex', flexDirection: 'column' }}>
@@ -469,7 +519,85 @@ export default function HomePage() {
                     </div>
                 </section>
 
-                {/* ════════════════ INTEGRATIONS ════════════════ */}
+                {/* Divider */}
+                <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
+                    <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${border}, transparent)` }} />
+                </div>
+
+                {/* ════════════════ GOD MODE ════════════════ */}
+                <section style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 24px' }}>
+                    <div style={{ textAlign: 'center', marginBottom: 56 }}>
+                        <SectionLabel dark={dark}>God Mode RPA</SectionLabel>
+                        <h2 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', fontWeight: 900, color: primary, marginTop: 14, letterSpacing: '-1.5px' }}>
+                            True Autonomous Engineering
+                        </h2>
+                        <p style={{ color: secondary, marginTop: 14, fontSize: '0.93rem', maxWidth: 640, margin: '14px auto 0' }}>
+                            SamarthyaBot goes far beyond API wrapping. It can actively commandeer your local OS, automate invisible browsers, and SSH into your fleet.
+                        </p>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
+                        {/* Browser DOM Tool */}
+                        <div className="card-hover" style={{ padding: '32px', borderRadius: 16, border: `1px solid ${border}`, background: surface }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+                                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Globe size={20} />
+                                </div>
+                                <div>
+                                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: primary }}>Browser Manipulation</h3>
+                                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>Puppeteer-Core Engine</div>
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '0.88rem', color: secondary, lineHeight: 1.7, marginBottom: 24 }}>
+                                The AI spins up an invisible Chromium instance to navigate complex web pages, click DOM nodes, solve captchas, and scrape JSON cleanly.
+                            </p>
+                            <div style={{ background: dark ? '#0a0a0f' : '#f0f0f5', padding: '16px', borderRadius: 10, border: `1px solid ${border}` }}>
+                                <div style={{ fontSize: '0.75rem', color: muted, marginBottom: 8, fontWeight: 600 }}>EXAMPLE COMMAND</div>
+                                <code style={{ fontSize: '0.85rem', color: primary, fontFamily: 'monospace' }}>"Go to zerodha.com, click the login button, and read the error message."</code>
+                            </div>
+                        </div>
+
+                        {/* Go Streaming Worker */}
+                        <div className="card-hover" style={{ padding: '32px', borderRadius: 16, border: `1px solid ${border}`, background: surface }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+                                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(250, 204, 21, 0.1)', color: '#facc15', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Terminal size={20} />
+                                </div>
+                                <div>
+                                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: primary }}>Go Streaming Worker</h3>
+                                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#facc15', textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>High-Performance Sub-Node</div>
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '0.88rem', color: secondary, lineHeight: 1.7, marginBottom: 24 }}>
+                                For long-running CLI tasks (like building Docker images), Samarthya spawns a tiny Golang subprocess to run safely without blocking Node's event loop.
+                            </p>
+                            <div style={{ background: dark ? '#0a0a0f' : '#f0f0f5', padding: '16px', borderRadius: 10, border: `1px solid ${border}` }}>
+                                <div style={{ fontSize: '0.75rem', color: muted, marginBottom: 8, fontWeight: 600 }}>EXAMPLE COMMAND</div>
+                                <code style={{ fontSize: '0.85rem', color: primary, fontFamily: 'monospace' }}>"Run a cargo build on my Rust project and stream the compilation logs to me."</code>
+                            </div>
+                        </div>
+
+                        {/* Remote SSH Access */}
+                        <div className="card-hover" style={{ padding: '32px', borderRadius: 16, border: `1px solid ${border}`, background: surface }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+                                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Server size={20} />
+                                </div>
+                                <div>
+                                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: primary }}>Remote SSH Control</h3>
+                                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#ef4444', textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>DevOps Automation</div>
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '0.88rem', color: secondary, lineHeight: 1.7, marginBottom: 24 }}>
+                                The agent can securely authenticate into your remote VPS fleet. Tell it to restart an Nginx server or pull the latest GitHub commit directly inside chat.
+                            </p>
+                            <div style={{ background: dark ? '#0a0a0f' : '#f0f0f5', padding: '16px', borderRadius: 10, border: `1px solid ${border}` }}>
+                                <div style={{ fontSize: '0.75rem', color: muted, marginBottom: 8, fontWeight: 600 }}>EXAMPLE COMMAND</div>
+                                <code style={{ fontSize: '0.85rem', color: primary, fontFamily: 'monospace' }}>"SSH into 142.250.21.2, pull the main branch for /app, and restart pm2."</code>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section style={{ maxWidth: 1100, margin: '0 auto', padding: '96px 24px' }}>
                     <div style={{ textAlign: 'center', marginBottom: 48 }}>
                         <SectionLabel dark={dark}>Integrations</SectionLabel>
