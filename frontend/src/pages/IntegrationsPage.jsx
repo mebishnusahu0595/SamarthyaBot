@@ -14,7 +14,7 @@ const integrationCategories = [
         subtitle: 'Message SamarthyaBot from any chat app — it responds right where you are.',
         items: [
             { name: 'WhatsApp', nameHi: 'व्हाट्सएप', icon: '📱', desc: 'WhatsApp Business Cloud API', status: 'live', tag: '🇮🇳 #1 in India' },
-            { name: 'Telegram', nameHi: 'टेलीग्राम', icon: '✈️', desc: 'Bot API integration', status: 'coming', tag: '' },
+            { name: 'Telegram', nameHi: 'टेलीग्राम', icon: '✈️', desc: 'Bot API integration', status: 'live', tag: 'Active' },
             { name: 'WebChat', nameHi: 'वेबचैट', icon: '💬', desc: 'Browser-based UI (this app)', status: 'live', tag: '' },
             { name: 'Discord', nameHi: 'डिस्कॉर्ड', icon: '🎮', desc: 'Servers, channels & DMs', status: 'coming', tag: '' },
             { name: 'Slack', nameHi: 'स्लैक', icon: '💼', desc: 'Workspace integration', status: 'coming', tag: '' },

@@ -72,11 +72,13 @@ npm run dev
 
 ## 🌟 Key Highlights
 
-- 🧠 **Autonomous Planning**: Native ReAct engine (`Reason` -> `Act` -> `Observe`) that breaks complex requests like *"Find the latest tech news and summarize the top 3 into a PDF"* into discrete steps.
-- � **Control Center UI**: A futuristic dashboard served locally from the gateway. Monitor system vitals, RAM usage, and active agent threads.
-- 🔐 **Encrypted Memory**: Every interaction is stored locally. Sensitive data like API keys are encrypted via **AES-256-CBC** with your custom vault key.
-- 🔌 **Extensible Modules**: Drop any JavaScript plugin into `~/SamarthyaBot_Files/plugins/` and the assistant learns it instantly.
-- 📸 **Visual Intelligence**: Built-in screen understanding for contextual automation.
+- 🤖 **Full RPA Engine (v1.1.3 God Mode):** Evolved from a chat assistant to a **Robotic Process Automation** agent. Writes code, commits to GitHub, and deploys to remote servers autonomously.
+- ⚡ **Go Micro-Worker Streaming:** Heavy CLI tasks (`npm build`, `git push`) are handled by a Golang backend that streams live terminal states back to the AI without freezing Node.js.
+- 🌍 **SSH Remote Deployments:** Native support for securely logging into remote VPS architectures (via Password or PEM keys) to deploy your Node/Python apps directly from a prompt.
+- 🕸️ **Browser DOM Controller:** Natively integrates `puppeteer-core`. Can connect to your local Chrome to navigate web pages, scrape UI, or create a new GitHub repository by interacting with real DOM selectors.
+- 🛡️ **Zero-Harm Blacklists:** Strict OS regex block-layer protects your computer from dangerous commands (`rm -rf`, `mkfs`), keeping autonomous loops perfectly safe.
+- 🧠 **Autonomous Planning**: Native ReAct engine breaks complex requests into discrete steps.
+- 🔐 **Encrypted Memory**: Every interaction is stored locally. Sensitive data like API keys are encrypted via **AES-256-CBC**.
 - 🇮🇳 **Indian Localization**: Specialized tools for **GST**, **IRCTC**, **UPI** links, and native **Hinglish/Hindi** fluency.
 
 ---
