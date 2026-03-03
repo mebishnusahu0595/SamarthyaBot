@@ -54,6 +54,24 @@ const FEATURES = [
         title: 'Visual Intelligence',
         desc: 'Built-in screen understanding for contextual automation. Let the agent see what you see and act on it autonomously.',
     },
+    {
+        icon: <Bot size={22} />,
+        accent: '#3b82f6',
+        title: 'Browser DOM Automation',
+        desc: 'Advanced RPA with Puppeteer-core. Let the AI click, type, and extract data precisely via DOM selectors.',
+    },
+    {
+        icon: <Terminal size={22} />,
+        accent: '#facc15',
+        title: 'Go Background Worker',
+        desc: 'High-performance Go worker node for long-running, CPU-intensive tasks with real-time streaming of stdout/stderr.',
+    },
+    {
+        icon: <Server size={22} />,
+        accent: '#ef4444',
+        title: 'Remote SSH Deployments',
+        desc: 'Securely connect to and manage your VPS or remote servers via SSH directly from the local agentic hub.',
+    },
 ];
 
 const CLI_COMMANDS = [
@@ -66,13 +84,13 @@ const CLI_COMMANDS = [
 
 const INTEGRATIONS = [
     { name: 'WhatsApp', emoji: '💬', bg: '#25D366', fg: '#fff' },
-    { name: 'Telegram', emoji: '✈️',  bg: '#2AABEE', fg: '#fff' },
-    { name: 'Gmail',    emoji: '📧', bg: '#EA4335', fg: '#fff' },
-    { name: 'GitHub',   emoji: '🐙', bg: '#24292e', fg: '#fff' },
-    { name: 'Discord',  emoji: '🎮', bg: '#5865F2', fg: '#fff' },
-    { name: 'Slack',    emoji: '#',  bg: '#4A154B', fg: '#fff' },
-    { name: 'UPI',      emoji: '₹',  bg: '#FF6600', fg: '#fff' },
-    { name: 'IRCTC',    emoji: '🚂', bg: '#1565C0', fg: '#fff' },
+    { name: 'Telegram', emoji: '✈️', bg: '#2AABEE', fg: '#fff' },
+    { name: 'Gmail', emoji: '📧', bg: '#EA4335', fg: '#fff' },
+    { name: 'GitHub', emoji: '🐙', bg: '#24292e', fg: '#fff' },
+    { name: 'Discord', emoji: '🎮', bg: '#5865F2', fg: '#fff' },
+    { name: 'Slack', emoji: '#', bg: '#4A154B', fg: '#fff' },
+    { name: 'UPI', emoji: '₹', bg: '#FF6600', fg: '#fff' },
+    { name: 'IRCTC', emoji: '🚂', bg: '#1565C0', fg: '#fff' },
 ];
 
 const TESTIMONIALS = [
@@ -327,8 +345,8 @@ export default function HomePage() {
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         {/* Version Badge */}
                         <div className="fade-up" style={badgeStyle(dark, border)}>
-                            <span style={{ background: 'linear-gradient(135deg,#FF9933,#e8851d)', color: '#fff', fontSize: '0.62rem', fontWeight: 800, padding: '3px 9px', borderRadius: 5, letterSpacing: 1 }}>BETA 1.1</span>
-                            <span style={{ color: secondary, fontSize: '0.82rem', fontWeight: 600 }}>Vectorized Memory & Gateway Tunneling Live</span>
+                            <span style={{ background: 'linear-gradient(135deg,#FF9933,#e8851d)', color: '#fff', fontSize: '0.62rem', fontWeight: 800, padding: '3px 9px', borderRadius: 5, letterSpacing: 1 }}>v1.1.3</span>
+                            <span style={{ color: secondary, fontSize: '0.82rem', fontWeight: 600 }}>God-Mode DOM RPA, Go Streaming & SSH</span>
                             <ChevronRight size={13} color={secondary} />
                         </div>
 
@@ -395,7 +413,7 @@ export default function HomePage() {
                     <div style={terminalCard(dark, border)}>
                         <div style={terminalHeader(dark, muted)}>
                             <div style={{ display: 'flex', gap: 7 }}>
-                                {['#ff5f56','#ffbd2e','#27c93f'].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />)}
+                                {['#ff5f56', '#ffbd2e', '#27c93f'].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />)}
                             </div>
                             <span style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, color: muted }}>Terminal</span>
                             <div />
@@ -494,7 +512,7 @@ export default function HomePage() {
                                 <div style={{ ...terminalCard(dark, border), padding: 0 }}>
                                     <div style={terminalHeader(dark, muted)}>
                                         <div style={{ display: 'flex', gap: 7 }}>
-                                            {['#ff5f56','#ffbd2e','#27c93f'].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />)}
+                                            {['#ff5f56', '#ffbd2e', '#27c93f'].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />)}
                                         </div>
                                         <span style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, color: muted }}>System Topology</span>
                                         <div />
@@ -521,10 +539,10 @@ export default function HomePage() {
                             {/* Layer list */}
                             <div style={{ flex: 1, minWidth: 260, display: 'flex', flexDirection: 'column', gap: 12 }}>
                                 {[
-                                    { icon: <MessageSquare size={18}/>, title: 'Surface Layer', desc: 'WhatsApp, Telegram, Web UI, CLI — unified gateway', accent: '#FF9933' },
-                                    { icon: <Cpu size={18}/>, title: 'Planner Engine', desc: 'ReAct loop: Reason → Act → Observe', accent: '#6ee7f7' },
-                                    { icon: <Database size={18}/>, title: 'Memory Vault', desc: 'AES-256 encrypted + semantic vector indexing', accent: '#a78bfa' },
-                                    { icon: <Zap size={18}/>, title: 'Skill Registry', desc: 'Hot-plug JS plugins, shell scripts, 30+ built-ins', accent: '#22c55e' },
+                                    { icon: <MessageSquare size={18} />, title: 'Surface Layer', desc: 'WhatsApp, Telegram, Web UI, CLI — unified gateway', accent: '#FF9933' },
+                                    { icon: <Cpu size={18} />, title: 'Planner Engine', desc: 'ReAct loop: Reason → Act → Observe', accent: '#6ee7f7' },
+                                    { icon: <Database size={18} />, title: 'Memory Vault', desc: 'AES-256 encrypted + semantic vector indexing', accent: '#a78bfa' },
+                                    { icon: <Zap size={18} />, title: 'Skill Registry', desc: 'Hot-plug JS plugins, shell scripts, 30+ built-ins', accent: '#22c55e' },
                                 ].map((l, i) => (
                                     <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', padding: '16px 18px', borderRadius: 12, border: `1px solid ${border}`, background: dark ? '#0e0e16' : '#ffffff' }}>
                                         <div style={{ width: 34, height: 34, borderRadius: 8, background: `${l.accent}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: l.accent, flexShrink: 0 }}>{l.icon}</div>
@@ -596,13 +614,13 @@ export default function HomePage() {
                             <div style={{ ...terminalCard(dark, border) }}>
                                 <div style={terminalHeader(dark, muted)}>
                                     <div style={{ display: 'flex', gap: 7 }}>
-                                        {['#ff5f56','#ffbd2e','#27c93f'].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />)}
+                                        {['#ff5f56', '#ffbd2e', '#27c93f'].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />)}
                                     </div>
                                     <span style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, color: muted }}>plugins/hello.js</span>
                                     <CopyButton text={PLUGIN_SNIPPET} dark={dark} />
                                 </div>
                                 <pre style={{ padding: '22px 24px', fontFamily: 'monospace', fontSize: '0.8rem', lineHeight: 1.8, overflowX: 'auto', color: dark ? '#b0b0e0' : '#3a3a6e' }}>
-{PLUGIN_SNIPPET}
+                                    {PLUGIN_SNIPPET}
                                 </pre>
                             </div>
                         </div>
@@ -622,10 +640,10 @@ export default function HomePage() {
                     </div>
                     <div className="spec-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
                         {[
-                            { icon: <Server size={22}/>, accent: '#6ee7f7', title: 'Local Control Plane', desc: 'The gateway runs entirely on YOUR machine. No SaaS, no subscription, no vendor lock-in.' },
-                            { icon: <Globe size={22}/>, accent: '#22c55e', title: 'Offline-Ready with Ollama', desc: 'Swap to Ollama for 100% offline inference. Zero data ever reaches a remote server.' },
-                            { icon: <Lock size={22}/>, accent: '#a78bfa', title: 'AES-256 Vault', desc: 'All sensitive data including API keys are encrypted at rest with your own vault key.' },
-                            { icon: <AlertTriangle size={22}/>, accent: '#FF9933', title: 'Emergency Kill Switch', desc: 'Stop all background agents instantly with a single command from the dashboard.' },
+                            { icon: <Server size={22} />, accent: '#6ee7f7', title: 'Local Control Plane', desc: 'The gateway runs entirely on YOUR machine. No SaaS, no subscription, no vendor lock-in.' },
+                            { icon: <Globe size={22} />, accent: '#22c55e', title: 'Offline-Ready with Ollama', desc: 'Swap to Ollama for 100% offline inference. Zero data ever reaches a remote server.' },
+                            { icon: <Lock size={22} />, accent: '#a78bfa', title: 'AES-256 Vault', desc: 'All sensitive data including API keys are encrypted at rest with your own vault key.' },
+                            { icon: <AlertTriangle size={22} />, accent: '#FF9933', title: 'Emergency Kill Switch', desc: 'Stop all background agents instantly with a single command from the dashboard.' },
                         ].map((s, i) => (
                             <div key={i} className="card-hover" style={{ padding: '28px 24px', borderRadius: 14, border: `1px solid ${border}`, background: surface, display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ width: 42, height: 42, borderRadius: 10, background: `${s.accent}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.accent, marginBottom: 16 }}>{s.icon}</div>
@@ -657,7 +675,7 @@ export default function HomePage() {
                                             <div style={{ fontSize: '0.76rem', color: muted, marginTop: 2 }}>{t.handle}</div>
                                         </div>
                                         <div style={{ marginLeft: 'auto', display: 'flex', gap: 2 }}>
-                                            {[1,2,3,4,5].map(s => <Star key={s} size={11} fill="#FF9933" color="#FF9933" />)}
+                                            {[1, 2, 3, 4, 5].map(s => <Star key={s} size={11} fill="#FF9933" color="#FF9933" />)}
                                         </div>
                                     </div>
                                     <p style={{ fontSize: '0.9rem', color: secondary, lineHeight: 1.75, fontStyle: 'italic' }}>"{t.text}"</p>
@@ -744,21 +762,21 @@ export default function HomePage() {
                                                     onMouseEnter={e => e.target.style.color = primary}
                                                     onMouseLeave={e => e.target.style.color = secondary}>
                                                     {lk.label}
-                                                  </Link>
+                                                </Link>
                                                 : lk.ext
-                                                ? <a key={li} href={lk.href} target="_blank" rel="noreferrer"
-                                                    style={{ fontSize: '0.86rem', color: secondary, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}
-                                                    onMouseEnter={e => e.currentTarget.style.color = primary}
-                                                    onMouseLeave={e => e.currentTarget.style.color = secondary}>
-                                                    {lk.label} <ExternalLink size={11} />
-                                                  </a>
-                                                : <a key={li} href={lk.href}
-                                                    style={{ fontSize: '0.86rem', color: secondary, fontWeight: 600 }}
-                                                    onClick={e => smoothScroll(e, lk.href)}
-                                                    onMouseEnter={e => e.target.style.color = primary}
-                                                    onMouseLeave={e => e.target.style.color = secondary}>
-                                                    {lk.label}
-                                                  </a>
+                                                    ? <a key={li} href={lk.href} target="_blank" rel="noreferrer"
+                                                        style={{ fontSize: '0.86rem', color: secondary, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}
+                                                        onMouseEnter={e => e.currentTarget.style.color = primary}
+                                                        onMouseLeave={e => e.currentTarget.style.color = secondary}>
+                                                        {lk.label} <ExternalLink size={11} />
+                                                    </a>
+                                                    : <a key={li} href={lk.href}
+                                                        style={{ fontSize: '0.86rem', color: secondary, fontWeight: 600 }}
+                                                        onClick={e => smoothScroll(e, lk.href)}
+                                                        onMouseEnter={e => e.target.style.color = primary}
+                                                        onMouseLeave={e => e.target.style.color = secondary}>
+                                                        {lk.label}
+                                                    </a>
                                         ))}
                                     </div>
                                 </div>
