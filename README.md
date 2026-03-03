@@ -86,7 +86,8 @@ npm run dev
 | `samarthya gateway` | Run the backend control plane and serve the Dashboard. |
 | `samarthya status` | Display the status of background jobs and the engine. |
 | `samarthya stop` | Gracefully shut down all background autonomous agents. |
-| `samarthya model [name]` | Swap between LLM providers (e.g. `ollama`, `gemini`). |
+| `samarthya model` | Swap between LLM providers (e.g. `ollama`, `gemini`). |
+| `samarthya tunnel` | Expose gateway to internet & auto-setup Telegram webhooks. |
 
 ---
 
@@ -99,12 +100,22 @@ If you are running from source or manual setup, create a `.env` file in the `bac
 GEMINI_API_KEY=your_gemini_api_key_here
 MEMORY_ENCRYPTION_KEY=your_32_char_secret_key
 
+# Optional (For Remote Access)
+TELEGRAM_BOT_TOKEN=your_telegram_bot_api_key
+
 # Optional
 MONGO_URI=mongodb://localhost:27017/samarthya
 PORT=5000
 USE_OLLAMA=false
 ACTIVE_PROVIDER=gemini # or ollama
 ```
+
+### 📱 Telegram Integration
+To connect SamarthyaBot to Telegram:
+1. Get a bot token from [@BotFather](https://t.me/BotFather).
+2. Add `TELEGRAM_BOT_TOKEN` to your `.env` file.
+3. Run `samarthya tunnel` in your terminal.
+4. Samarthya will automatically create a secure tunnel and link your bot!
 
 *Note: The `samarthya onboard` command handles these for you automatically!*
 
