@@ -27,6 +27,7 @@
         "puppeteer-core": "^24.37.5",
         "screenshot-desktop": "^1.15.3",
         "socket.io": "^4.8.3",
+        "ssh2": "^1.17.0",
         "uuid": "^13.0.0"
     },
     "keywords": [

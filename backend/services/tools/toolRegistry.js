@@ -4,10 +4,18 @@ const path = require('path');
 const os = require('os');
 const { exec } = require('child_process');
 const nodemailer = require('nodemailer');
+const { Client } = require('ssh2');
+const workerClient = require('../worker/workerClient');
 
 // ────────────────────────────────────────────────────────────
 // REAL Tool Definitions — No more simulations!
 // ────────────────────────────────────────────────────────────
+
+/**
+ * Security: Command Blacklist Map
+ * Prevent the AI (or user injection) from autonomously executing critically destructive host/remote commands.
+ */
+const BLOCKED_COMMANDS = /^(rm\s+-rf|rmdir|mkfs|dd|fdisk|shutdown|reboot|poweroff|halt|init|killall\s+-9|wget.*\.sh|curl.*\.sh|chmod\s+-R\s+777|chown\s+-R.*:.*\/)/im;
 
 /**
  * Safe directory — tools can only operate within this sandbox
@@ -491,10 +499,56 @@ const toolDefinitions = {
         }
     },
 
-    // ─────────── RUN COMMAND (Real — FULL ROOT/OS EXECUTION) ───────────
+    // ─────────── DEVOPS / STREAMING EXECUTION (Go Worker Integration) ───────────
+    devops_execute_stream: {
+        name: 'devops_execute_stream',
+        description: 'Run long or complex shell commands (like npm install, git push, vercel deploy) and stream the output back. Required for any heavy DevOps/Auto-Coder tasks. Uses the ultra-fast Go micro-worker.',
+        descriptionHi: 'लाइव शेल कमांड चलाएं',
+        riskLevel: 'critical',
+        category: 'system',
+        parameters: {
+            command: { type: 'string', required: true, description: 'Command to execute safely via Go' },
+            dir: { type: 'string', required: false, description: 'Working directory for the command' }
+        },
+        execute: async (args, userContext) => {
+            if (BLOCKED_COMMANDS.test(args.command)) {
+                return { success: false, result: `❌ Security Block: The command '${args.command}' contains patterns that are restricted (e.g., recursive deletes, system reboots, disk formats).` };
+            }
+
+            return new Promise((resolve) => {
+                let liveLog = '';
+
+                // Let the Go worker handle the heavy lifting!
+                workerClient.executeCommand(args.command, args.dir || '', (data, type) => {
+                    // Collect live output
+                    liveLog += data + '\\n';
+                    // Optional: If we had a websocket to the frontend dashboard, we'd emit it here!
+                }).then(({ success, exitCode, output, elapsed }) => {
+                    // Combine whatever was streamed
+                    const finalOutput = output || liveLog;
+
+                    if (!success) {
+                        resolve({
+                            success: false,
+                            result: `❌ Execution Failed (Code ${exitCode}):\n\`\`\`\n${finalOutput.substring(finalOutput.length > 3000 ? finalOutput.length - 3000 : 0)}\n\`\`\``
+                        });
+                        return;
+                    }
+                    resolve({
+                        success: true,
+                        result: `✅ **Success:** \`${args.command}\`\n⏱️ Elapsed: ${elapsed}ms\n\n\`\`\`\n${finalOutput.substring(0, 3000)}\n\`\`\``
+                    });
+                }).catch(err => {
+                    resolve({ success: false, result: `❌ Worker Error: ${err.message}` });
+                });
+            });
+        }
+    },
+
+    // ─────────── LEGACY RUN COMMAND (Kept for instant small commands) ───────────
     run_command: {
         name: 'run_command',
-        description: 'Run ANY shell command on the host OS. Warning: Full access provided. Use carefully.',
+        description: 'Run basic, instant shell commands natively. For long-running deploying/building, use devops_execute_stream instead.',
         descriptionHi: 'शेल कमांड चलाएं',
         riskLevel: 'critical',
         category: 'system',
@@ -502,6 +556,10 @@ const toolDefinitions = {
             command: { type: 'string', required: true, description: 'Shell command to execute' }
         },
         execute: async (args, userContext) => {
+            if (BLOCKED_COMMANDS.test(args.command)) {
+                return { success: false, result: `❌ Security Block: The command '${args.command}' contains patterns that are restricted (e.g., recursive deletes, system reboots, disk formats).` };
+            }
+
             return new Promise((resolve) => {
                 exec(args.command, { timeout: 15000, maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
                     if (error) {
@@ -516,6 +574,85 @@ const toolDefinitions = {
                         result: `💻 **Command:** \`${args.command}\`\n\n\`\`\`\n${(stdout || '(no output)').substring(0, 3000)}\n\`\`\``
                     });
                 });
+            });
+        }
+    },
+
+    // ─────────── REMOTE VPS DEPLOYMENT (SSH Stream) ───────────
+    ssh_deploy: {
+        name: 'ssh_deploy',
+        description: 'Login to a remote VPS server via SSH and execute commands autonomously (e.g., git pull, npm run build, pm2 restart).',
+        descriptionHi: 'रिमोट सर्वर पर कमांड चलाएं',
+        riskLevel: 'critical',
+        category: 'system',
+        parameters: {
+            host: { type: 'string', required: true, description: 'Server IP or Hostname' },
+            username: { type: 'string', required: true, description: 'SSH Username (e.g., root)' },
+            password: { type: 'string', required: false, description: 'SSH Password (if key is not used)' },
+            privateKeyPath: { type: 'string', required: false, description: 'Absolute path to local SSH private key file (if password is not used)' },
+            command: { type: 'string', required: true, description: 'Command string to run on the remote VPS (e.g., "cd /var/www && git pull")' }
+        },
+        execute: async (args, userContext) => {
+            if (BLOCKED_COMMANDS.test(args.command)) {
+                return { success: false, result: `❌ Security Block: The command '${args.command}' contains patterns that are restricted on remote SSH systems.` };
+            }
+
+            return new Promise(async (resolve) => {
+                const conn = new Client();
+                let outputLog = '';
+
+                // Build SSH config
+                const config = {
+                    host: args.host,
+                    port: 22,
+                    username: args.username,
+                    readyTimeout: 10000 // 10s connection timeout
+                };
+
+                // Auth strategy
+                if (args.password) {
+                    config.password = args.password;
+                } else if (args.privateKeyPath) {
+                    try {
+                        config.privateKey = await fs.readFile(args.privateKeyPath, 'utf8');
+                    } catch (e) {
+                        return resolve({ success: false, result: `❌ Failed to read private key at ${args.privateKeyPath}: ${e.message}` });
+                    }
+                } else {
+                    return resolve({ success: false, result: `❌ Missing Authentication. Provide either 'password' or 'privateKeyPath'.` });
+                }
+
+                conn.on('ready', () => {
+                    outputLog += `[SSH] Connected to ${args.username}@${args.host} successfully.\n`;
+                    outputLog += `[SSH] Executing: ${args.command}\n\n`;
+
+                    conn.exec(args.command, (err, stream) => {
+                        if (err) {
+                            conn.end();
+                            return resolve({ success: false, result: `❌ Command Execution Error:\n\`\`\`\n${err.message}\n\`\`\`` });
+                        }
+
+                        stream.on('close', (code, signal) => {
+                            conn.end();
+                            const success = code === 0;
+                            const statusIcon = success ? '✅' : '❌';
+
+                            resolve({
+                                success: success,
+                                result: `${statusIcon} **SSH Execution Complete** (Exit Code: ${code})\n\n\`\`\`\n${outputLog.substring(outputLog.length > 3000 ? outputLog.length - 3000 : 0)}\n\`\`\``
+                            });
+                        }).on('data', (data) => {
+                            outputLog += data.toString();
+                        }).stderr.on('data', (data) => {
+                            outputLog += data.toString();
+                        });
+                    });
+                }).on('error', (err) => {
+                    resolve({ success: false, result: `❌ SSH Connection Error to ${args.host}: ${err.message}` });
+                });
+
+                // Start connection
+                conn.connect(config);
             });
         }
     },
@@ -685,32 +822,84 @@ const toolDefinitions = {
         }
     },
 
-    // ─────────── OPEN URL (Real browser open) ───────────
-    open_url: {
-        name: 'open_url',
-        description: 'Open a URL in the default browser',
-        descriptionHi: 'ब्राउज़र में URL खोलें',
-        riskLevel: 'medium',
+    // ─────────── ADVANCED BROWSER AUTOMATION (Puppeteer) ───────────
+    browser_action: {
+        name: 'browser_action',
+        description: 'Auto-control a chromium browser. It can navigate, click, type, and read the screen autonomously. Use this to create Github repos, write docs, or scrape web UI.',
+        descriptionHi: 'ब्राउज़र पे ऑटोमैटिक काम करें',
+        riskLevel: 'high',
         category: 'browser',
         parameters: {
-            url: { type: 'string', required: true, description: 'URL to open' }
+            url: { type: 'string', required: true, description: 'URL to navigate to or interact with.' },
+            actions: {
+                type: 'string',
+                required: false,
+                description: 'JSON array of actions. Format: [{"type":"click","selector":"#submit"},{"type":"type","selector":"#email","text":"my@email.com"},{"type":"wait","ms":2000},{"type":"extract","selector":"body"}]'
+            }
         },
         execute: async (args, userContext) => {
-            return new Promise((resolve) => {
-                const cmd = `xdg-open "${args.url}" 2>/dev/null || open "${args.url}" 2>/dev/null`;
-                exec(cmd, { timeout: 5000 }, (error) => {
-                    if (error) {
-                        resolve({
-                            success: false,
-                            result: `❌ Could not open browser: ${error.message}\n\n🔗 URL: ${args.url}`
-                        });
+            return new Promise(async (resolve) => {
+                const puppeteer = require('puppeteer-core');
+                let browser;
+                let log = `🌐 **Browser Automation Started:** ${args.url}\n`;
+
+                try {
+                    // Try to connect to existing local Chrome, fallback to a downloaded edge/chrome if needed.
+                    // For local system testing, we simulate launching a default visible chrome.
+                    let execPaths = [];
+                    if (os.platform() === 'win32') {
+                        execPaths = [
+                            'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+                            'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+                        ];
+                    } else if (os.platform() === 'darwin') {
+                        execPaths = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'];
                     } else {
-                        resolve({
-                            success: true,
-                            result: `🌐 **Opened in browser:** ${args.url}`
-                        });
+                        execPaths = ['/usr/bin/google-chrome', '/usr/bin/chromium-browser'];
                     }
-                });
+
+                    let validPath = execPaths.find(p => require('fs').existsSync(p));
+                    if (!validPath) {
+                        return resolve({ success: false, result: `❌ Chrome/Edge executable not found for Puppeteer.` });
+                    }
+
+                    browser = await puppeteer.launch({
+                        executablePath: validPath,
+                        headless: false, // Make it visible to the user!
+                        defaultViewport: null,
+                    });
+
+                    const page = await browser.newPage();
+                    await page.goto(args.url, { waitUntil: 'networkidle2' });
+                    log += `✅ Loaded: ${args.url}\n`;
+
+                    if (args.actions) {
+                        const actionsList = JSON.parse(args.actions);
+                        for (let act of actionsList) {
+                            if (act.type === 'click') {
+                                await page.click(act.selector);
+                                log += `🖱️ Clicked: ${act.selector}\n`;
+                            } else if (act.type === 'type') {
+                                await page.type(act.selector, act.text);
+                                log += `⌨️ Typed "${act.text}" into ${act.selector}\n`;
+                            } else if (act.type === 'wait') {
+                                await new Promise(r => setTimeout(r, act.ms));
+                                log += `⏳ Waited ${act.ms}ms\n`;
+                            } else if (act.type === 'extract') {
+                                const text = await page.$eval(act.selector, el => el.innerText);
+                                log += `📄 Extracted text from ${act.selector}:\n\`\`\`\n${text.substring(0, 500)}...\n\`\`\`\n`;
+                            }
+                        }
+                    }
+
+                    // Leave browser open for the user if it's a visual task
+                    setTimeout(() => browser.close(), 60000);
+
+                    resolve({ success: true, result: log + '\n✨ Browser task completed successfully.' });
+                } catch (err) {
+                    if (browser) await browser.close();
+                    resolve({ success: false, result: `❌ Browser Action Failed:\n${err.message}\n\nLogs:\n${log}` });
+                }
             });
         }
     },
@@ -728,13 +917,10 @@ const toolDefinitions = {
                 const screenshot = require('screenshot-desktop');
                 screenshot({ format: 'png' })
                     .then((imgRaw) => {
-                        // Return the base64 to the LLM
                         const base64 = imgRaw.toString('base64');
                         resolve({
                             success: true,
                             result: `📸 **Screenshot Captured successfully!**\nUse the analyze_screen tool or your vision capabilities to see what is on screen.\n[IMAGE_DATA_BASE64_READY_INTERNAL_USE]`
-                            // Note: We don't feed the raw 5MB string back into the prompt buffer directly here, 
-                            // but the agent now knows it took a shot. In a full system, you'd integrate this with llmService vision api directly.
                         });
                     })
                     .catch((err) => {
