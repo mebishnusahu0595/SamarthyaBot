@@ -12,8 +12,15 @@ const backendDir = path.join(__dirname, '..');
 // Helper to check if server is already running on port 5000
 const isServerRunning = () => {
     try {
-        execSync('fuser 5000/tcp 2>/dev/null');
-        return true;
+        if (process.platform === 'win32') {
+            const output = execSync('netstat -ano | findstr :5000', { encoding: 'utf-8' });
+            return output.includes('LISTENING');
+        } else {
+            // macOS and Linux
+            // Using lsof as it's more standard across unix than fuser
+            execSync('lsof -i:5000 -t 2>/dev/null');
+            return true;
+        }
     } catch {
         return false;
     }
@@ -79,6 +86,7 @@ switch (command) {
             const anthropicKey = await question('🔑 Enter Anthropic (Claude) API Key (or press Enter to skip): ');
             const groqKey = await question('🔑 Enter Groq API Key (or press Enter to skip): ');
             const openAiKey = await question('🔑 Enter OpenAI API Key (or press Enter to skip): ');
+            const telegramToken = await question('🤖 Enter Telegram Bot Token (or press Enter to skip): ');
 
             const envPath = path.join(backendDir, '.env');
             let envVars = {};
@@ -113,6 +121,7 @@ switch (command) {
             if (anthropicKey.trim()) envVars['ANTHROPIC_API_KEY'] = anthropicKey.trim();
             if (groqKey.trim()) envVars['GROQ_API_KEY'] = groqKey.trim();
             if (openAiKey.trim()) envVars['OPENAI_API_KEY'] = openAiKey.trim();
+            if (telegramToken.trim()) envVars['TELEGRAM_BOT_TOKEN'] = telegramToken.trim();
 
             if (!envVars['GEMINI_API_KEY']) envVars['GEMINI_API_KEY'] = 'dummy';
 
@@ -297,7 +306,11 @@ switch (command) {
 
         try { require('dotenv').config({ path: path.join(backendDir, '.env') }); } catch (e) { }
 
-        const tunnelProcess = spawn('npx', ['localtunnel', '--port', '5000'], { stdio: 'pipe' });
+        const isWindows = process.platform === 'win32';
+        const tunnelProcess = spawn('npm', ['exec', 'localtunnel', '--', '--port', '5000'], {
+            stdio: 'pipe',
+            shell: isWindows
+        });
 
         tunnelProcess.stdout.on('data', async (data) => {
             const output = data.toString();
@@ -346,7 +359,23 @@ switch (command) {
         if (isServerRunning()) {
             console.log('🛑 Stopping SamarthyaBot Gateway...');
             try {
-                execSync('fuser -k 5000/tcp 2>/dev/null');
+                if (process.platform === 'win32') {
+                    // Find PID of process listening on port 5000 and kill it
+                    const netstatOut = execSync('netstat -ano | findstr :5000', { encoding: 'utf-8' });
+                    const lines = netstatOut.split('\\n');
+                    for (const line of lines) {
+                        if (line.includes('LISTENING')) {
+                            const parts = line.trim().split(/\\s+/);
+                            const pid = parts[parts.length - 1];
+                            if (pid && pid !== '0') {
+                                execSync(`taskkill /PID ${pid} /F`, { stdio: 'ignore' });
+                            }
+                        }
+                    }
+                } else {
+                    // macOS and Linux
+                    execSync('lsof -t -i:5000 | xargs kill -9 2>/dev/null || fuser -k 5000/tcp 2>/dev/null');
+                }
                 console.log('✅ Gateway stopped successfully.');
             } catch (e) {
                 console.log('❌ Failed to stop gateway gracefully. Process might already be dead.');
@@ -360,7 +389,21 @@ switch (command) {
         console.log('🔄 Restarting SamarthyaBot Gateway...');
         if (isServerRunning()) {
             try {
-                execSync('fuser -k 5000/tcp 2>/dev/null');
+                if (process.platform === 'win32') {
+                    const netstatOut = execSync('netstat -ano | findstr :5000', { encoding: 'utf-8' });
+                    const lines = netstatOut.split('\\n');
+                    for (const line of lines) {
+                        if (line.includes('LISTENING')) {
+                            const parts = line.trim().split(/\\s+/);
+                            const pid = parts[parts.length - 1];
+                            if (pid && pid !== '0') {
+                                execSync(`taskkill /PID ${pid} /F`, { stdio: 'ignore' });
+                            }
+                        }
+                    }
+                } else {
+                    execSync('lsof -t -i:5000 | xargs kill -9 2>/dev/null || fuser -k 5000/tcp 2>/dev/null');
+                }
             } catch (e) { /* ignore */ }
         }
         // Give it a moment to free the port

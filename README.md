@@ -34,7 +34,7 @@ SamarthyaBot is built for developers. The best way to start is the **CLI Wizard*
 
 ### 📦 Install (Global)
 
-Runtime: **Node JS ≥ 20** and **MongoDB** (Local).
+Runtime: **Node 20 LTS** (Officially Supported/Recommended) and **MongoDB** (Local).
 
 ```bash
 npm install -g samarthya-bot
@@ -42,10 +42,13 @@ npm install -g samarthya-bot
 # Start the interactive setup
 samarthya onboard
 
-# Launch the engine and dashboard
+# Launch the engine and dashboard (Terminal 1)
 samarthya gateway
+
+# Expose to internet & setup Telegram Webhook (Terminal 2)
+samarthya tunnel
 ```
-*The wizard guides you through API keys (Gemini/Ollama) and system permissions.*
+*The wizard guides you through API keys (Gemini/Ollama, Telegram Bot Token) and system permissions.*
 
 ### 🛠️ From Source (Development)
 
@@ -87,7 +90,7 @@ npm run dev
 | `samarthya status` | Display the status of background jobs and the engine. |
 | `samarthya stop` | Gracefully shut down all background autonomous agents. |
 | `samarthya model` | Swap between LLM providers (e.g. `ollama`, `gemini`). |
-| `samarthya tunnel` | Expose gateway to internet & auto-setup Telegram webhooks. |
+| `samarthya tunnel` | Expose gateway to internet. **(Must run in a separate terminal)** |
 
 ---
 
@@ -113,11 +116,10 @@ ACTIVE_PROVIDER=gemini # or ollama
 ### 📱 Telegram Integration
 To connect SamarthyaBot to Telegram:
 1. Get a bot token from [@BotFather](https://t.me/BotFather).
-2. Add `TELEGRAM_BOT_TOKEN` to your `.env` file.
-3. Run `samarthya tunnel` in your terminal.
-4. Samarthya will automatically create a secure tunnel and link your bot!
-
-*Note: The `samarthya onboard` command handles these for you automatically!*
+2. The `samarthya onboard` wizard will automatically ask for this token.
+3. Run `samarthya gateway` in your **first terminal**.
+4. Run `samarthya tunnel` in a **new, separate terminal**.
+5. Samarthya will automatically create a secure tunnel and link your bot!
 
 ---
 

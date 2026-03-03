@@ -1,6 +1,6 @@
 {
     "name": "samarthya-bot",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Privacy-First Local Agentic OS & Command Center",
     "main": "backend/server.js",
     "bin": {
@@ -37,7 +37,7 @@
         "samarthya-bot",
         "ollama"
     ],
-    "author": "Bishnu Sahu",
+    "author": "Bishnu Prasad Sahu",
     "license": "MIT",
     "engines": {
         "node": ">=20.0.0"
