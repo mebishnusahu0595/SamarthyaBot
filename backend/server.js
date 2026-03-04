@@ -19,6 +19,13 @@ const fileRoutes = require('./routes/files');
 const platformRoutes = require('./routes/platform');
 const backgroundService = require('./services/background/backgroundService');
 
+// New PicoClaw-inspired services
+const discordService = require('./services/discord/discordService');
+const sandboxService = require('./services/security/sandboxService');
+const heartbeatService = require('./services/heartbeat/heartbeatService');
+const voiceService = require('./services/voice/voiceService');
+const spawnService = require('./services/agent/spawnService');
+
 const app = express();
 const server = http.createServer(app);
 
@@ -58,14 +65,20 @@ app.use('/api/platform', platformRoutes);
 // Serve static frontend UI (SamarthyaBot Dashboard)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Health check
+// Health check — now includes all service statuses
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         name: 'SamarthyaBot Server',
-        version: '1.0.0',
+        version: '2.0.0',
         uptime: process.uptime(),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        services: {
+            sandbox: sandboxService.getStatus(),
+            heartbeat: heartbeatService.getStatus(),
+            voice: voiceService.isAvailable(),
+            spawn: spawnService.getStatus()
+        }
     });
 });
 
@@ -102,28 +115,63 @@ connectDB().then(() => {
         const activeModel = process.env.ACTIVE_MODEL || 'gemini-2.5-flash';
         const aiString = `🧠 Active AI: ${activeProvider} (${activeModel})`.padEnd(49, ' ');
 
+        const discordStatus = process.env.DISCORD_BOT_TOKEN ? '✅ Active' : '⚪ No Token';
+        const voiceStatus = voiceService.isAvailable() ? '✅ Groq Whisper' : '⚪ Not Configured';
+        const sandboxStatus = sandboxService.enabled ? '✅ Enabled' : '⚠️ Disabled';
+        const heartbeatStatus = heartbeatService.enabled ? `✅ Every ${heartbeatService.intervalMinutes}min` : '⚪ Disabled';
+
         console.log(`
-╔══════════════════════════════════════════════════════╗
-║                                                      ║
-║   🧠 SamarthyaBot Server v1.1.0                      ║
-║   Privacy-first Personal AI Operator                 ║
-║                                                      ║
-║   🌐 Server:    http://localhost:${PORT}             ║
-║   📡 Socket:    ws://localhost:${PORT}               ║
-║   🔗 Health:    http://localhost:${PORT}/api/health  ║
-║   📱 WhatsApp:  /api/whatsapp/webhook                ║
-║   🤖 Telegram:  /api/telegram/webhook                ║
-║   👁️  Vision:    /api/screen/analyze                 ║
-║                                                      ║
-║   🇮🇳 Built for Indian Workflows                      ║
-║   📦 Ollama: ${process.env.USE_OLLAMA === 'true' ? '✅ Enabled'.padEnd(35) : '❌ Disabled'.padEnd(35)}║
-║   🔄 Autonomous Background Engine: ✅ Active         ║
-║   🔌 Dynamic Plugin Engine: ✅ Active                ║
-║   ${aiString}                                        ║
-║                                                      ║
-╚══════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════╗
+║                                                          ║
+║   🇮🇳  SamarthyaBot Server v2.0.0                         ║
+║   Privacy-first Personal AI Operator · Made in India     ║
+║                                                          ║
+║   🌐 Server:    http://localhost:${String(PORT).padEnd(25)}║
+║   📡 Socket:    ws://localhost:${String(PORT).padEnd(26)}║
+║   🔗 Health:    http://localhost:${PORT}/api/health${' '.repeat(8)}║
+║                                                          ║
+║   ── Channels ──────────────────────────────────────     ║
+║   🤖 Telegram:  /api/telegram/webhook                    ║
+║   🟣 Discord:   ${discordStatus.padEnd(39)}║
+║   📱 WhatsApp:  /api/whatsapp/webhook                    ║
+║   👁️  Vision:    /api/screen/analyze                      ║
+║                                                          ║
+║   ── AI Engine ─────────────────────────────────────     ║
+║   ${aiString.padEnd(55)}║
+║   📦 Ollama:    ${(process.env.USE_OLLAMA === 'true' ? '✅ Enabled' : '❌ Disabled').padEnd(39)}║
+║   🎙️  Voice:     ${voiceStatus.padEnd(38)}║
+║                                                          ║
+║   ── Services ──────────────────────────────────────     ║
+║   🔄 Background Engine:  ✅ Active                       ║
+║   🔌 Plugin Engine:      ✅ Active                       ║
+║   🔒 Workspace Sandbox:  ${sandboxStatus.padEnd(31)}║
+║   💓 Heartbeat:          ${heartbeatStatus.padEnd(31)}║
+║   🚀 Sub-Agent Spawn:    ✅ Ready                        ║
+║                                                          ║
+║   🇮🇳 Built with ❤️ in India by Bishnu Sahu                ║
+║                                                          ║
+╚══════════════════════════════════════════════════════════╝
         `);
+
+        // Start all services
         backgroundService.start();
+
+        // Start Discord bot (if configured)
+        discordService.start(async (message, userId, channel) => {
+            // Simple handler — route Discord messages through the chat pipeline
+            // This will be connected to your chatController in production
+            const chatController = require('./controllers/chatController');
+            if (chatController.handleExternalMessage) {
+                return chatController.handleExternalMessage(message, userId, channel);
+            }
+            return 'Namaste! Main SamarthyaBot hoon. Chat service starting up... 🚀';
+        });
+
+        // Start Heartbeat periodic tasks
+        heartbeatService.start(async (task, userId, channel) => {
+            console.log(`💓 Heartbeat executing: ${task.substring(0, 50)}`);
+            return null; // Tasks are logged, full pipeline integration comes next
+        });
     });
 }).catch(err => {
     console.error('Failed to connect to database:', err);

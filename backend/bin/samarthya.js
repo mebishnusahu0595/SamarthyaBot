@@ -28,13 +28,13 @@ const isServerRunning = () => {
 
 if (!command) {
     console.log(`
-🤖 SamarthyaBot Local AI Agent
+🇮🇳 SamarthyaBot — Your Local Agentic OS
 Usage:
-  samarthya onboard      - Setup your local environment
+  samarthya onboard      - Setup + Start everything (single command!)
   samarthya model        - Change your active AI provider/model
-  samarthya gateway      - Start the local server
+  samarthya gateway      - Start the local server only
+  samarthya tunnel       - Expose to internet & setup webhooks
   samarthya status       - Check if the agent is running
-  samarthya tunnel       - Expose to internet & setup webhooks 
   samarthya stop         - Stop the running gateway
   samarthya restart      - Restart the gateway
 `);
@@ -54,14 +54,17 @@ switch (command) {
 
         (async () => {
             console.log("\n🌐 Select your primary AI Provider:");
-            console.log("  1) Google Gemini (Default)");
-            console.log("  2) Anthropic Claude");
+            console.log("  1) Google Gemini (Default, Free tier)");
+            console.log("  2) Anthropic Claude (Smartest)");
             console.log("  3) Groq (Fastest)");
-            console.log("  4) OpenAI");
-            console.log("  5) Local Ollama (Offline)");
-            console.log("  6) Mistral AI\n");
+            console.log("  4) OpenAI (GPT-5)");
+            console.log("  5) DeepSeek (Budget-friendly)");
+            console.log("  6) Qwen (Alibaba)");
+            console.log("  7) OpenRouter (100+ models via 1 key)");
+            console.log("  8) Local Ollama (Offline, Private)");
+            console.log("  9) Mistral AI\n");
 
-            let providerRaw = await question("Enter choice (1-6, default 1): ");
+            let providerRaw = await question("Enter choice (1-9, default 1): ");
             let activeProvider = 'gemini';
             let useOllama = 'false';
 
@@ -69,11 +72,14 @@ switch (command) {
                 case '2': activeProvider = 'anthropic'; break;
                 case '3': activeProvider = 'groq'; break;
                 case '4': activeProvider = 'openai'; break;
-                case '5':
+                case '5': activeProvider = 'deepseek'; break;
+                case '6': activeProvider = 'qwen'; break;
+                case '7': activeProvider = 'openrouter'; break;
+                case '8':
                     activeProvider = 'ollama';
                     useOllama = 'true';
                     break;
-                case '6': activeProvider = 'mistral'; break;
+                case '9': activeProvider = 'mistral'; break;
                 case '1':
                 default:
                     activeProvider = 'gemini';
@@ -86,7 +92,12 @@ switch (command) {
             const anthropicKey = await question('🔑 Enter Anthropic (Claude) API Key (or press Enter to skip): ');
             const groqKey = await question('🔑 Enter Groq API Key (or press Enter to skip): ');
             const openAiKey = await question('🔑 Enter OpenAI API Key (or press Enter to skip): ');
+            const deepseekKey = await question('🔑 Enter DeepSeek API Key (or press Enter to skip): ');
+            const qwenKey = await question('🔑 Enter Qwen API Key (or press Enter to skip): ');
+            const openrouterKey = await question('🔑 Enter OpenRouter API Key (or press Enter to skip): ');
             const telegramToken = await question('🤖 Enter Telegram Bot Token (or press Enter to skip): ');
+            const discordToken = await question('🟣 Enter Discord Bot Token (or press Enter to skip): ');
+            const encKey = await question('🔐 Enter 32-char Encryption Key (or press Enter for auto-generate): ');
 
             const envPath = path.join(backendDir, '.env');
             let envVars = {};
@@ -95,13 +106,17 @@ switch (command) {
             if (fs.existsSync(envPath)) {
                 const currentEnv = fs.readFileSync(envPath, 'utf8');
                 currentEnv.split('\n').forEach(line => {
-                    const [k, v] = line.split('=');
-                    if (k && v) envVars[k.trim()] = v.trim();
+                    const eqIndex = line.indexOf('=');
+                    if (eqIndex > 0) {
+                        const k = line.substring(0, eqIndex).trim();
+                        const v = line.substring(eqIndex + 1).trim();
+                        if (k) envVars[k] = v;
+                    }
                 });
             } else {
                 envVars = {
                     PORT: '5000',
-                    MONGODB_URI: 'mongodb://localhost:27017/samarthya',
+                    MONGO_URI: 'mongodb://localhost:27017/samarthya',
                     JWT_SECRET: 'samarthya_secret_key_change_in_production',
                     NODE_ENV: 'production',
                     CORS_ORIGIN: 'http://localhost:5000',
@@ -109,7 +124,9 @@ switch (command) {
                     ACTIVE_PROVIDER: activeProvider,
                     ACTIVE_MODEL: activeProvider === 'gemini' ? 'gemini-2.5-flash' : '',
                     OLLAMA_URL: 'http://localhost:11434',
-                    OLLAMA_MODEL: 'dolphin3:8b-llama3.1-q4_K_M'
+                    OLLAMA_MODEL: 'dolphin3:8b-llama3.1-q4_K_M',
+                    RESTRICT_TO_WORKSPACE: 'true',
+                    HEARTBEAT_INTERVAL: '30'
                 };
             }
 
@@ -121,7 +138,20 @@ switch (command) {
             if (anthropicKey.trim()) envVars['ANTHROPIC_API_KEY'] = anthropicKey.trim();
             if (groqKey.trim()) envVars['GROQ_API_KEY'] = groqKey.trim();
             if (openAiKey.trim()) envVars['OPENAI_API_KEY'] = openAiKey.trim();
+            if (deepseekKey.trim()) envVars['DEEPSEEK_API_KEY'] = deepseekKey.trim();
+            if (qwenKey.trim()) envVars['QWEN_API_KEY'] = qwenKey.trim();
+            if (openrouterKey.trim()) envVars['OPENROUTER_API_KEY'] = openrouterKey.trim();
             if (telegramToken.trim()) envVars['TELEGRAM_BOT_TOKEN'] = telegramToken.trim();
+            if (discordToken.trim()) envVars['DISCORD_BOT_TOKEN'] = discordToken.trim();
+
+            // Auto-generate encryption key if not provided
+            if (encKey.trim()) {
+                envVars['MEMORY_ENCRYPTION_KEY'] = encKey.trim();
+            } else if (!envVars['MEMORY_ENCRYPTION_KEY']) {
+                const crypto = require('crypto');
+                envVars['MEMORY_ENCRYPTION_KEY'] = crypto.randomBytes(16).toString('hex');
+                console.log('🔐 Auto-generated encryption key.');
+            }
 
             if (!envVars['GEMINI_API_KEY']) envVars['GEMINI_API_KEY'] = 'dummy';
 
@@ -130,14 +160,67 @@ switch (command) {
             fs.writeFileSync(envPath, newEnvContent);
             console.log('\n✅ Keys saved to .env file securely.');
 
-            console.log('📦 Installing backend dependencies (this might take a few seconds)...');
+            console.log('📦 Installing backend dependencies...');
             try {
                 execSync('npm install --production', { cwd: backendDir, stdio: 'ignore' });
             } catch (e) { /* ignore */ }
 
-            console.log('\n✨ Onboarding complete! Run "samarthya gateway" to start your AI Operator.');
             rl.close();
-            process.exit(0);
+
+            // ═══════ AUTO-START: Gateway + Tunnel in one command ═══════
+            console.log('\n🚀 Starting SamarthyaBot Gateway...');
+
+            // Load the .env we just wrote
+            try { require('dotenv').config({ path: envPath }); } catch (e) { }
+
+            const gatewayChild = spawn('node', ['server.js'], {
+                cwd: backendDir,
+                stdio: 'inherit'
+            });
+
+            gatewayChild.on('close', (code) => {
+                console.log(`Gateway exited with code ${code}`);
+            });
+
+            // Wait for server to boot, then start tunnel
+            setTimeout(() => {
+                if (envVars['TELEGRAM_BOT_TOKEN'] && envVars['TELEGRAM_BOT_TOKEN'] !== 'dummy') {
+                    console.log('\n🚇 Auto-starting tunnel for Telegram webhook...');
+                    const isWin = process.platform === 'win32';
+                    const tunnelChild = spawn('npm', ['exec', 'localtunnel', '--', '--port', '5000'], {
+                        stdio: 'pipe',
+                        shell: isWin
+                    });
+
+                    tunnelChild.stdout.on('data', async (data) => {
+                        const output = data.toString();
+                        console.log(output.trim());
+                        const match = output.match(/your url is: (https:\/\/.+)/);
+                        if (match && match[1]) {
+                            const publicUrl = match[1];
+                            console.log(`\n✅ Public Gateway URL: ${publicUrl}`);
+                            if (envVars['TELEGRAM_BOT_TOKEN']) {
+                                try {
+                                    const tgUrl = `https://api.telegram.org/bot${envVars['TELEGRAM_BOT_TOKEN']}/setWebhook?url=${publicUrl}/api/telegram/webhook`;
+                                    const res = await fetch(tgUrl);
+                                    const result = await res.json();
+                                    if (result.ok) console.log('🟢 Telegram Webhook Set!');
+                                    else console.log('🔴 Telegram Webhook failed:', result.description);
+                                } catch (err) {
+                                    console.log('🔴 Webhook error:', err.message);
+                                }
+                            }
+                        }
+                    });
+
+                    tunnelChild.stderr.on('data', (data) => console.error('Tunnel:', data.toString()));
+                } else {
+                    console.log('\n✅ Gateway is running! Open http://localhost:5000');
+                    console.log('ℹ️  No Telegram token found — skipping tunnel. Run "samarthya tunnel" later if needed.');
+                }
+            }, 3000);
+
+            // Don't exit — keep process alive
         })();
         break;
 
@@ -152,10 +235,13 @@ switch (command) {
             console.log("  2) Anthropic Claude");
             console.log("  3) Groq (Fastest)");
             console.log("  4) OpenAI");
-            console.log("  5) Local Ollama (Offline)");
-            console.log("  6) Mistral AI\n");
+            console.log("  5) DeepSeek");
+            console.log("  6) Qwen (Alibaba)");
+            console.log("  7) OpenRouter (100+ models)");
+            console.log("  8) Local Ollama (Offline)");
+            console.log("  9) Mistral AI\n");
 
-            let pRaw = await qModel("Enter choice (1-6, default 1): ");
+            let pRaw = await qModel("Enter choice (1-9, default 1): ");
             let aProv = 'gemini';
             let uOll = 'false';
 
@@ -163,8 +249,11 @@ switch (command) {
                 case '2': aProv = 'anthropic'; break;
                 case '3': aProv = 'groq'; break;
                 case '4': aProv = 'openai'; break;
-                case '5': aProv = 'ollama'; uOll = 'true'; break;
-                case '6': aProv = 'mistral'; break;
+                case '5': aProv = 'deepseek'; break;
+                case '6': aProv = 'qwen'; break;
+                case '7': aProv = 'openrouter'; break;
+                case '8': aProv = 'ollama'; uOll = 'true'; break;
+                case '9': aProv = 'mistral'; break;
                 default: aProv = 'gemini'; break;
             }
 

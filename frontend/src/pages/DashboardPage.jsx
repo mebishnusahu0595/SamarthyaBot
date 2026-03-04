@@ -4,8 +4,18 @@ import { chatAPI, auditAPI, toolsAPI, platformAPI } from '../services/api';
 import {
     MessageSquare, Shield, Wrench, Clock, TrendingUp, Zap,
     AlertTriangle, ChevronRight, Activity, Globe, Brain,
-    Cpu, HardDrive, Layout, Server, Terminal, Power, PlayCircle
+    Cpu, HardDrive, Layout, Server, Terminal, Power, PlayCircle,
+    Wifi, WifiOff, Lock, Unlock, Heart, Rocket, Bot, Sparkles,
+    Radio, Eye, Plug, ArrowRight
 } from 'lucide-react';
+
+// ── Indian Flag Color System ──
+const SAFFRON = '#FF9933';
+const WHITE = '#FFFFFF';
+const GREEN = '#138808';
+const NAVY = '#000080';
+const SAFFRON_GLOW = 'rgba(255,153,51,0.15)';
+const GREEN_GLOW = 'rgba(19,136,8,0.15)';
 
 export default function DashboardPage({ user }) {
     const navigate = useNavigate();
@@ -14,14 +24,13 @@ export default function DashboardPage({ user }) {
     const [backgroundJobs, setBackgroundJobs] = useState([]);
     const [recentConvs, setRecentConvs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
         loadData();
-        // Refresh platform data every 15 seconds for that "active OS" feel
-        const interval = setInterval(() => {
-            loadPlatformData();
-        }, 15000);
-        return () => clearInterval(interval);
+        const interval = setInterval(() => loadPlatformData(), 15000);
+        const clockInterval = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => { clearInterval(interval); clearInterval(clockInterval); };
     }, []);
 
     const loadPlatformData = async () => {
@@ -33,7 +42,7 @@ export default function DashboardPage({ user }) {
             setPlatformStatus(statusRes.data.status);
             setBackgroundJobs(jobsRes.data.jobs || []);
         } catch (e) { }
-    }
+    };
 
     const loadData = async () => {
         setLoading(true);
@@ -42,10 +51,8 @@ export default function DashboardPage({ user }) {
                 chatAPI.getConversations().catch(() => ({ data: { conversations: [] } })),
                 auditAPI.getStats().catch(() => ({ data: { stats: { totalActions: 0, byCategory: {}, byStatus: {} } } }))
             ]);
-
             setRecentConvs(convsRes.data.conversations?.slice(0, 5) || []);
             setStats(statsRes.data.stats);
-
             await loadPlatformData();
         } catch (err) {
             console.error('Dashboard load error:', err);
@@ -56,523 +63,562 @@ export default function DashboardPage({ user }) {
 
     const formatUptime = (seconds) => {
         if (!seconds) return '0h 0m';
-        const h = Math.floor(seconds / 3600);
+        const d = Math.floor(seconds / 86400);
+        const h = Math.floor((seconds % 86400) / 3600);
         const m = Math.floor((seconds % 3600) / 60);
+        if (d > 0) return `${d}d ${h}h`;
         return `${h}h ${m}m`;
+    };
+
+    const getGreeting = () => {
+        const h = currentTime.getHours();
+        if (h < 5) return '🌙 Good Night';
+        if (h < 12) return '🌅 Good Morning';
+        if (h < 17) return '☀️ Good Afternoon';
+        if (h < 21) return '🌆 Good Evening';
+        return '🌙 Good Night';
     };
 
     if (loading) {
         return (
-            <div style={{ ...styles.container, display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-                <Activity size={40} className="spinner" style={{ color: 'var(--accent-primary)' }} />
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0a0a0f', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ width: '48px', height: '48px', border: `3px solid ${SAFFRON}20`, borderTopColor: SAFFRON, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <span style={{ color: '#888', fontSize: '0.9rem' }}>Initializing SamarthyaBot...</span>
             </div>
-        )
+        );
     }
 
     return (
         <div style={styles.container}>
-            {/* Control Center Header */}
-            <div style={styles.header}>
-                <div>
-                    <h1 style={styles.title}>
-                        Control Center
+            {/* ── Saffron Accent Line at Top ── */}
+            <div style={{ height: '3px', background: `linear-gradient(90deg, ${SAFFRON}, ${WHITE}40, ${GREEN})`, borderRadius: '4px', marginBottom: '28px' }} />
+
+            {/* ── Hero Header ── */}
+            <div style={styles.heroSection}>
+                <div style={styles.heroLeft}>
+                    <div style={styles.greeting}>{getGreeting()}</div>
+                    <h1 style={styles.heroTitle}>
+                        <span style={{ color: SAFFRON }}>Samarthya</span>
+                        <span style={{ color: '#e0e0e0' }}>Bot</span>
+                        <span style={styles.versionBadge}>v2.0</span>
                     </h1>
-                    <div style={styles.systemBadge}>
-                        <Server size={14} /> System Online • OS: {platformStatus?.osName || 'SamarthyaOS'}
+                    <p style={styles.heroSub}>
+                        🇮🇳 Privacy-first Agentic AI · {currentTime.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })} IST
+                    </p>
+                    <div style={styles.statusRow}>
+                        <span style={styles.onlinePill}><span style={styles.pulseDot} /> ONLINE</span>
+                        <span style={styles.infoPill}><Brain size={12} /> {platformStatus?.activeProvider?.toUpperCase() || 'GEMINI'}</span>
+                        <span style={styles.infoPill}><Server size={12} /> {platformStatus?.osName || 'Linux'}</span>
                     </div>
                 </div>
-                <div style={styles.headerActions}>
+                <div style={styles.heroRight}>
+                    <button onClick={() => navigate('/chat')} style={styles.heroBtn}>
+                        <Zap size={20} /> Talk to Agent
+                    </button>
                     <button
                         onClick={async () => {
-                            if (window.confirm("Are you sure you want to KILL all background processes? This will stop all autonomous activity immediately.")) {
+                            if (window.confirm("🚨 Kill all background processes?")) {
                                 await platformAPI.emergencyStop();
                                 loadPlatformData();
-                                alert("🚨 Emergency Stop Engaged. All systems halted.");
                             }
                         }}
-                        style={styles.dangerBtn}
-                        title="Emergency Kill Switch"
+                        style={styles.killBtn}
                     >
-                        <Power size={18} /> Kill Switch
-                    </button>
-                    <button onClick={() => navigate('/tools')} style={styles.secondaryBtn}>
-                        <Wrench size={18} /> Modules
-                    </button>
-                    <button onClick={() => navigate('/chat')} style={styles.newChatBtn}>
-                        <Zap size={18} /> Spawn Agent
+                        <Power size={16} /> Kill Switch
                     </button>
                 </div>
             </div>
 
-            {/* Platform OS Vitals */}
-            <h3 style={styles.sectionTitle}>System Vitals</h3>
+            {/* ── Stat Cards Grid ── */}
             <div style={styles.statsGrid}>
-                {/* Uptime */}
-                <div style={{ ...styles.statCard, background: 'var(--bg-secondary)', borderLeft: '4px solid #6366f1' }}>
-                    <div style={{ ...styles.statIcon, background: '#6366f120', color: '#6366f1' }}>
-                        <Clock size={22} />
-                    </div>
-                    <div style={styles.statInfo}>
-                        <div style={styles.statValue}>{formatUptime(platformStatus?.uptime)}</div>
-                        <div style={styles.statLabel}>Agent Uptime</div>
-                    </div>
-                </div>
-
-                {/* RAM */}
-                <div style={{ ...styles.statCard, background: 'var(--bg-secondary)', borderLeft: '4px solid #14b8a6' }}>
-                    <div style={{ ...styles.statIcon, background: '#14b8a620', color: '#14b8a6' }}>
-                        <Cpu size={22} />
-                    </div>
-                    <div style={styles.statInfo}>
-                        <div style={styles.statValue}>{platformStatus?.ramUsage || 0}%</div>
-                        <div style={styles.statLabel}>Memory Load</div>
-                    </div>
-                </div>
-
-                {/* Plugins/Tools */}
-                <div style={{ ...styles.statCard, background: 'var(--bg-secondary)', borderLeft: '4px solid #f59e0b' }}>
-                    <div style={{ ...styles.statIcon, background: '#f59e0b20', color: '#f59e0b' }}>
-                        <Layout size={22} />
-                    </div>
-                    <div style={styles.statInfo}>
-                        <div style={styles.statValue}>{platformStatus?.totalTools || 0} / {platformStatus?.loadedPlugins || 0}</div>
-                        <div style={styles.statLabel}>Core Tools / Plugins</div>
-                    </div>
-                </div>
-
-                {/* Total Actions */}
-                <div style={{ ...styles.statCard, background: 'var(--bg-secondary)', borderLeft: '4px solid #f43f5e' }}>
-                    <div style={{ ...styles.statIcon, background: '#f43f5e20', color: '#f43f5e' }}>
-                        <Activity size={22} />
-                    </div>
-                    <div style={styles.statInfo}>
-                        <div style={styles.statValue}>{stats?.totalActions || 0}</div>
-                        <div style={styles.statLabel}>Tasks Executed</div>
-                    </div>
-                </div>
+                <StatCard
+                    icon={<Clock size={24} />}
+                    value={formatUptime(platformStatus?.uptime)}
+                    label="Agent Uptime"
+                    color="#818cf8"
+                    gradient="linear-gradient(135deg, rgba(129,140,248,0.15), rgba(99,102,241,0.05))"
+                />
+                <StatCard
+                    icon={<Cpu size={24} />}
+                    value={`${platformStatus?.ramUsage || 0}%`}
+                    label="Memory Usage"
+                    color="#2dd4bf"
+                    gradient="linear-gradient(135deg, rgba(45,212,191,0.15), rgba(20,184,166,0.05))"
+                />
+                <StatCard
+                    icon={<Activity size={24} />}
+                    value={stats?.totalActions || 0}
+                    label="Tasks Executed"
+                    color={SAFFRON}
+                    gradient={`linear-gradient(135deg, ${SAFFRON_GLOW}, rgba(255,153,51,0.03))`}
+                />
+                <StatCard
+                    icon={<Plug size={24} />}
+                    value={`${platformStatus?.totalTools || 0}`}
+                    label="Active Tools"
+                    color={GREEN}
+                    gradient={`linear-gradient(135deg, ${GREEN_GLOW}, rgba(19,136,8,0.03))`}
+                />
             </div>
 
+            {/* ── Main Grid: 2 columns ── */}
             <div style={styles.mainGrid}>
-                {/* Active Background Jobs */}
-                <div style={{ ...styles.card, gridColumn: 'span 2' }}>
+
+                {/* Left Column — Background Processes */}
+                <div style={styles.glassCard}>
                     <div style={styles.cardHeader}>
-                        <h3 style={styles.cardTitle}>
+                        <div style={styles.cardTitleRow}>
                             <Activity size={18} style={{ color: '#10b981' }} />
-                            Autonomous Background Processes
-                        </h3>
-                        <span style={styles.liveBadge}><span style={styles.pulseDot}></span> LIVE</span>
+                            <span style={styles.cardTitle}>Autonomous Processes</span>
+                        </div>
+                        <span style={styles.liveBadge}><span style={styles.pulseDotSmall} /> LIVE</span>
                     </div>
                     <div style={styles.cardBody}>
                         {backgroundJobs.length > 0 ? (
-                            <div style={styles.jobsList}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {backgroundJobs.map(job => (
                                     <div key={job._id} style={styles.jobCard}>
-                                        <div style={styles.jobHeader}>
-                                            <span style={styles.jobName}>{job.taskName}</span>
-                                            <span style={job.isActive ? styles.jobActive : styles.jobInactive}>
-                                                {job.isActive ? 'RUNNING' : 'STOPPED'}
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                            <span style={{ fontWeight: 600, color: '#e0e0e0', fontSize: '0.9rem' }}>{job.taskName}</span>
+                                            <span style={job.isActive ? styles.activePill : styles.stoppedPill}>
+                                                {job.isActive ? '● RUNNING' : '○ STOPPED'}
                                             </span>
                                         </div>
-                                        <div style={styles.jobPrompt}>"{job.prompt}"</div>
-                                        <div style={styles.jobMeta}>
-                                            <span><Clock size={12} /> Interval: {job.intervalMinutes}m</span>
-                                            <span><PlayCircle size={12} /> Next Run: {new Date(job.nextRunAt).toLocaleTimeString()}</span>
+                                        <div style={{ fontSize: '0.8rem', color: '#888', fontStyle: 'italic', marginBottom: '6px' }}>"{job.prompt}"</div>
+                                        <div style={{ display: 'flex', gap: '14px', fontSize: '0.72rem', color: '#666' }}>
+                                            <span><Clock size={11} /> {job.intervalMinutes}m</span>
+                                            <span><PlayCircle size={11} /> Next: {new Date(job.nextRunAt).toLocaleTimeString()}</span>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div style={styles.emptyState}>
-                                <HardDrive size={32} style={{ color: 'var(--text-muted)', marginBottom: '8px' }} />
-                                <p>No autonomous background tasks running.</p>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                    Ask the agent to "schedule a background task" to monitor processes!
-                                </span>
+                                <Bot size={36} style={{ color: '#333', marginBottom: '8px' }} />
+                                <p style={{ color: '#666', margin: 0 }}>No autonomous tasks running</p>
+                                <span style={{ fontSize: '0.75rem', color: '#555' }}>Ask the agent to schedule a background task!</span>
                             </div>
                         )}
                     </div>
                 </div>
 
-                {/* Recent Processes (Conversations) */}
-                <div style={styles.card}>
+                {/* Right Column — Recent Interactions */}
+                <div style={styles.glassCard}>
                     <div style={styles.cardHeader}>
-                        <h3 style={styles.cardTitle}>
-                            <MessageSquare size={18} style={{ color: 'var(--accent-primary)' }} />
-                            Recent Interactions
-                        </h3>
-                        <button onClick={() => navigate('/chat')} style={styles.viewAllBtn}>
-                            View All <ChevronRight size={14} />
+                        <div style={styles.cardTitleRow}>
+                            <MessageSquare size={18} style={{ color: SAFFRON }} />
+                            <span style={styles.cardTitle}>Recent Interactions</span>
+                        </div>
+                        <button onClick={() => navigate('/chat')} style={styles.linkBtn}>
+                            All <ChevronRight size={14} />
                         </button>
                     </div>
                     <div style={styles.cardBody}>
                         {recentConvs.length > 0 ? recentConvs.map(conv => (
                             <button key={conv._id} onClick={() => navigate(`/chat/${conv._id}`)} style={styles.convRow}>
-                                <div style={styles.convDot} />
-                                <div style={styles.convInfo}>
-                                    <span style={styles.convName}>{conv.title}</span>
-                                    <span style={styles.convTime}>
-                                        {new Date(conv.updatedAt).toLocaleDateString()} {new Date(conv.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </span>
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: SAFFRON, flexShrink: 0 }} />
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div style={{ fontSize: '0.88rem', fontWeight: 500, color: '#e0e0e0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{conv.title}</div>
+                                    <div style={{ fontSize: '0.72rem', color: '#666' }}>
+                                        {new Date(conv.updatedAt).toLocaleDateString('en-IN')} · {new Date(conv.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </div>
                                 </div>
-                                <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />
+                                <ArrowRight size={14} style={{ color: '#444' }} />
                             </button>
                         )) : (
                             <div style={styles.emptyState}>
-                                <p>System idle. No recent sessions.</p>
+                                <MessageSquare size={32} style={{ color: '#333' }} />
+                                <p style={{ color: '#666', margin: '8px 0 0' }}>No conversations yet</p>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
 
-            {/* Memory & Plugin Banner */}
-            <div style={styles.bannerGrid}>
-                <div style={styles.vaultBanner}>
-                    <Shield size={24} style={{ color: '#10b981' }} />
-                    <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>Encrypted Memory Vault Active</div>
-                        <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>AES-256-CBC encryption enabled for secrets and PI data.</div>
-                    </div>
-                    <button onClick={() => navigate('/settings')} style={styles.outlineBtn}>Configure</button>
-                </div>
+            {/* ── Services Status Bar ── */}
+            <div style={styles.servicesBar}>
+                <ServiceChip icon="🔒" label="Vault" active />
+                <ServiceChip icon="🔐" label="Sandbox" active />
+                <ServiceChip icon="💓" label="Heartbeat" active />
+                <ServiceChip icon="🎙️" label="Voice" />
+                <ServiceChip icon="🚀" label="Spawn" active />
+                <ServiceChip icon="🔌" label="Plugins" active />
+                <ServiceChip icon="🟣" label="Discord" />
+                <ServiceChip icon="✈️" label="Telegram" />
+            </div>
 
-                <div style={styles.pluginBanner}>
-                    <Power size={24} style={{ color: '#f59e0b' }} />
-                    <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>Extensibility Engine</div>
-                        <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>Drop JS modules in ~/SamarthyaBot_Files/plugins/ to expand OS.</div>
-                    </div>
-                </div>
+            {/* ── Quick Actions ── */}
+            <div style={styles.quickGrid}>
+                <QuickAction icon={<Wrench size={20} />} label="Tool Packs" sub="Manage agents" color="#818cf8" onClick={() => navigate('/tools')} />
+                <QuickAction icon={<Shield size={20} />} label="Audit Log" sub="Execution history" color="#10b981" onClick={() => navigate('/audit')} />
+                <QuickAction icon={<Globe size={20} />} label="Integrations" sub="Channels & APIs" color={SAFFRON} onClick={() => navigate('/integrations')} />
+                <QuickAction icon={<Layout size={20} />} label="Settings" sub="Configure agent" color="#f472b6" onClick={() => navigate('/settings')} />
+            </div>
+
+            {/* ── Footer Branding ── */}
+            <div style={styles.footer}>
+                <div style={{ height: '2px', background: `linear-gradient(90deg, transparent, ${SAFFRON}40, ${GREEN}40, transparent)`, marginBottom: '16px' }} />
+                <span style={{ color: '#444', fontSize: '0.78rem' }}>
+                    🇮🇳 Built with ❤️ in India by Bishnu Sahu · SamarthyaBot v2.0.0
+                </span>
             </div>
         </div>
     );
 }
 
+// ── Reusable Components ──
+
+function StatCard({ icon, value, label, color, gradient }) {
+    return (
+        <div style={{
+            background: gradient,
+            border: `1px solid ${color}20`,
+            borderRadius: '16px',
+            padding: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            cursor: 'default',
+        }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 30px ${color}15`; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+        >
+            <div style={{
+                width: '48px', height: '48px', borderRadius: '12px',
+                background: `${color}18`, color: color,
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+                {icon}
+            </div>
+            <div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 700, color: '#e8e8e8', lineHeight: 1.1 }}>{value}</div>
+                <div style={{ fontSize: '0.8rem', color: '#888', fontWeight: 500, marginTop: '2px' }}>{label}</div>
+            </div>
+        </div>
+    );
+}
+
+function ServiceChip({ icon, label, active }) {
+    return (
+        <div style={{
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '6px 12px', borderRadius: '20px',
+            background: active ? 'rgba(19,136,8,0.08)' : 'rgba(100,100,100,0.08)',
+            border: `1px solid ${active ? 'rgba(19,136,8,0.2)' : 'rgba(100,100,100,0.15)'}`,
+            fontSize: '0.78rem', fontWeight: 500,
+            color: active ? '#4ade80' : '#666',
+        }}>
+            <span>{icon}</span>
+            <span>{label}</span>
+            {active && <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#4ade80' }} />}
+        </div>
+    );
+}
+
+function QuickAction({ icon, label, sub, color, onClick }) {
+    return (
+        <button
+            onClick={onClick}
+            style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: '14px',
+                padding: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                color: '#e0e0e0',
+                textAlign: 'left',
+                width: '100%',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = `${color}10`; e.currentTarget.style.borderColor = `${color}30`; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; }}
+        >
+            <div style={{
+                width: '40px', height: '40px', borderRadius: '10px',
+                background: `${color}15`, color: color,
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+                {icon}
+            </div>
+            <div>
+                <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{label}</div>
+                <div style={{ fontSize: '0.75rem', color: '#888' }}>{sub}</div>
+            </div>
+            <ChevronRight size={16} style={{ marginLeft: 'auto', color: '#444' }} />
+        </button>
+    );
+}
+
+// ── Styles ──
+
 const styles = {
     container: {
-        padding: '28px 32px',
-        maxWidth: '1200px',
+        padding: '24px 32px 40px',
+        maxWidth: '1100px',
         margin: '0 auto',
         animation: 'fadeIn 0.4s ease-out',
+        minHeight: '100vh',
+        background: '#0a0a0f',
     },
-    header: {
+    heroSection: {
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'space-between',
+        alignItems: 'flex-start',
         marginBottom: '32px',
         flexWrap: 'wrap',
-        gap: '16px',
+        gap: '20px',
     },
-    title: {
-        fontSize: '2rem',
+    heroLeft: {},
+    heroRight: {
+        display: 'flex',
+        gap: '10px',
+        alignItems: 'center',
+    },
+    greeting: {
+        fontSize: '0.9rem',
+        color: '#888',
+        marginBottom: '4px',
+        fontWeight: 500,
+    },
+    heroTitle: {
+        fontSize: '2.2rem',
         fontWeight: 800,
-        color: 'var(--text-primary)',
-        letterSpacing: '-0.5px'
+        letterSpacing: '-1px',
+        margin: 0,
+        lineHeight: 1.1,
     },
-    systemBadge: {
+    versionBadge: {
+        fontSize: '0.65rem',
+        fontWeight: 700,
+        padding: '2px 8px',
+        background: `${SAFFRON}20`,
+        color: SAFFRON,
+        borderRadius: '6px',
+        marginLeft: '10px',
+        verticalAlign: 'super',
+    },
+    heroSub: {
+        color: '#666',
+        fontSize: '0.85rem',
+        marginTop: '8px',
+        marginBottom: '12px',
+    },
+    statusRow: {
+        display: 'flex',
+        gap: '8px',
+        flexWrap: 'wrap',
+    },
+    onlinePill: {
         display: 'inline-flex',
         alignItems: 'center',
         gap: '6px',
         padding: '4px 10px',
-        background: 'rgba(16, 185, 129, 0.15)',
-        color: '#10b981',
-        borderRadius: '4px',
-        fontSize: '0.8rem',
-        fontWeight: 600,
-        marginTop: '8px'
+        background: 'rgba(16,185,129,0.1)',
+        color: '#4ade80',
+        borderRadius: '20px',
+        fontSize: '0.72rem',
+        fontWeight: 700,
+        border: '1px solid rgba(16,185,129,0.2)',
     },
-    headerActions: {
-        display: 'flex',
-        gap: '12px'
+    infoPill: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '5px',
+        padding: '4px 10px',
+        background: 'rgba(255,255,255,0.04)',
+        color: '#888',
+        borderRadius: '20px',
+        fontSize: '0.72rem',
+        fontWeight: 500,
+        border: '1px solid rgba(255,255,255,0.08)',
     },
-    dangerBtn: {
+    pulseDot: {
+        width: '7px', height: '7px',
+        backgroundColor: '#4ade80',
+        borderRadius: '50%',
+        boxShadow: '0 0 0 0 rgba(74,222,128,0.7)',
+        animation: 'pulse 1.5s infinite',
+    },
+    pulseDotSmall: {
+        width: '5px', height: '5px',
+        backgroundColor: '#10b981',
+        borderRadius: '50%',
+        animation: 'pulse 1.5s infinite',
+    },
+    heroBtn: {
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        padding: '10px 18px',
-        background: 'rgba(239, 68, 68, 0.1)',
-        color: '#ef4444',
-        border: '1px solid rgba(239, 68, 68, 0.3)',
-        borderRadius: 'var(--radius-md)',
-        fontSize: '0.9rem',
+        padding: '12px 28px',
+        background: `linear-gradient(135deg, ${SAFFRON}, #e67300)`,
+        color: '#fff',
+        border: 'none',
+        borderRadius: '12px',
+        fontSize: '0.95rem',
         fontWeight: 700,
         cursor: 'pointer',
-        transition: 'all 0.2s'
-    },
-    secondaryBtn: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '10px 18px',
-        background: 'var(--bg-secondary)',
-        color: 'var(--text-primary)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-md)',
-        fontSize: '0.9rem',
-        fontWeight: 600,
-        cursor: 'pointer',
-        transition: 'all 0.2s'
-    },
-    newChatBtn: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '10px 24px',
-        background: 'var(--gradient-primary)',
-        color: 'white',
-        border: 'none',
-        borderRadius: 'var(--radius-md)',
-        fontSize: '0.95rem',
-        fontWeight: 600,
-        cursor: 'pointer',
-        boxShadow: '0 4px 14px rgba(99,102,241,0.3)',
+        boxShadow: `0 4px 20px ${SAFFRON}40`,
         transition: 'all 0.2s',
     },
-    sectionTitle: {
-        fontSize: '1.2rem',
+    killBtn: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '10px 16px',
+        background: 'rgba(239,68,68,0.08)',
+        color: '#f87171',
+        border: '1px solid rgba(239,68,68,0.2)',
+        borderRadius: '10px',
+        fontSize: '0.82rem',
         fontWeight: 600,
-        marginBottom: '16px',
-        color: 'var(--text-secondary)'
+        cursor: 'pointer',
+        transition: 'all 0.2s',
     },
     statsGrid: {
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '20px',
-        marginBottom: '32px',
-    },
-    statCard: {
-        padding: '20px',
-        borderRadius: 'var(--radius-md)',
-        display: 'flex',
-        alignItems: 'center',
         gap: '16px',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
-    },
-    statIcon: {
-        width: '44px',
-        height: '44px',
-        borderRadius: '8px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    statInfo: {
-        flex: 1,
-    },
-    statValue: {
-        fontSize: '1.5rem',
-        fontWeight: 700,
-        color: 'var(--text-primary)',
-    },
-    statLabel: {
-        fontSize: '0.85rem',
-        color: 'var(--text-muted)',
-        fontWeight: 500,
+        marginBottom: '28px',
     },
     mainGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        gap: '24px',
-        marginBottom: '28px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+        gap: '20px',
+        marginBottom: '24px',
     },
-    card: {
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-lg)',
+    glassCard: {
+        background: 'rgba(255,255,255,0.025)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '16px',
         overflow: 'hidden',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.04)'
+        backdropFilter: 'blur(10px)',
     },
     cardHeader: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '16px 20px',
-        borderBottom: '1px solid var(--border-subtle)',
-        background: 'rgba(0,0,0,0.02)'
+        padding: '14px 18px',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
     },
-    cardTitle: {
+    cardTitleRow: {
         display: 'flex',
         alignItems: 'center',
-        gap: '10px',
-        fontSize: '1.05rem',
+        gap: '8px',
+    },
+    cardTitle: {
+        fontSize: '0.95rem',
         fontWeight: 600,
-        color: 'var(--text-primary)',
+        color: '#d0d0d0',
     },
     liveBadge: {
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        fontSize: '0.75rem',
+        gap: '5px',
+        fontSize: '0.68rem',
         fontWeight: 700,
         color: '#10b981',
-        background: 'rgba(16, 185, 129, 0.1)',
-        padding: '4px 8px',
-        borderRadius: '4px'
+        background: 'rgba(16,185,129,0.1)',
+        padding: '3px 8px',
+        borderRadius: '6px',
     },
-    pulseDot: {
-        width: '6px',
-        height: '6px',
-        backgroundColor: '#10b981',
-        borderRadius: '50%',
-        boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.7)',
-        animation: 'pulse 1.5s infinite'
-    },
-    viewAllBtn: {
+    linkBtn: {
         display: 'flex',
         alignItems: 'center',
-        gap: '4px',
+        gap: '3px',
         background: 'none',
         border: 'none',
-        color: 'var(--accent-primary)',
-        fontSize: '0.85rem',
+        color: SAFFRON,
+        fontSize: '0.82rem',
         fontWeight: 600,
         cursor: 'pointer',
     },
     cardBody: {
-        padding: '16px',
-    },
-    jobsList: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '12px'
+        padding: '14px 18px',
     },
     jobCard: {
-        background: 'var(--bg-main)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: '8px',
-        padding: '14px',
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.05)',
+        borderRadius: '10px',
+        padding: '12px',
     },
-    jobHeader: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '8px'
+    activePill: {
+        fontSize: '0.65rem',
+        padding: '2px 8px',
+        background: 'rgba(16,185,129,0.1)',
+        color: '#4ade80',
+        borderRadius: '6px',
+        fontWeight: 700,
     },
-    jobName: {
-        fontWeight: 600,
-        fontSize: '0.95rem',
-        color: 'var(--text-primary)'
-    },
-    jobActive: {
-        fontSize: '0.7rem',
-        padding: '2px 6px',
-        background: 'rgba(16, 185, 129, 0.1)',
-        color: '#10b981',
-        borderRadius: '4px',
-        fontWeight: 700
-    },
-    jobInactive: {
-        fontSize: '0.7rem',
-        padding: '2px 6px',
-        background: 'rgba(239, 68, 68, 0.1)',
-        color: '#ef4444',
-        borderRadius: '4px',
-        fontWeight: 700
-    },
-    jobPrompt: {
-        fontSize: '0.85rem',
-        color: 'var(--text-secondary)',
-        fontStyle: 'italic',
-        lineHeight: 1.4,
-        marginBottom: '10px'
-    },
-    jobMeta: {
-        display: 'flex',
-        gap: '16px',
-        fontSize: '0.75rem',
-        color: 'var(--text-muted)'
+    stoppedPill: {
+        fontSize: '0.65rem',
+        padding: '2px 8px',
+        background: 'rgba(239,68,68,0.08)',
+        color: '#f87171',
+        borderRadius: '6px',
+        fontWeight: 700,
     },
     convRow: {
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
-        padding: '12px',
-        borderRadius: '8px',
+        padding: '10px 8px',
+        borderRadius: '10px',
         background: 'transparent',
         border: 'none',
         width: '100%',
         cursor: 'pointer',
         textAlign: 'left',
-        color: 'var(--text-primary)',
-    },
-    convDot: {
-        width: '8px',
-        height: '8px',
-        borderRadius: '50%',
-        background: 'var(--accent-primary)',
-        flexShrink: 0,
-    },
-    convInfo: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-        minWidth: 0,
-    },
-    convName: {
-        fontSize: '0.9rem',
-        fontWeight: 500,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-    },
-    convTime: {
-        fontSize: '0.75rem',
-        color: 'var(--text-muted)',
+        color: '#e0e0e0',
+        transition: 'background 0.15s',
     },
     emptyState: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '40px 16px',
-        color: 'var(--text-muted)',
+        padding: '36px 16px',
         textAlign: 'center',
     },
-    bannerGrid: {
+    servicesBar: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '8px',
+        marginBottom: '24px',
+        padding: '16px',
+        background: 'rgba(255,255,255,0.02)',
+        borderRadius: '14px',
+        border: '1px solid rgba(255,255,255,0.04)',
+    },
+    quickGrid: {
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '20px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+        gap: '12px',
+        marginBottom: '32px',
     },
-    vaultBanner: {
-        background: 'linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.05) 100%)',
-        border: '1px solid rgba(16,185,129,0.2)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '20px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '16px',
-        color: 'var(--text-primary)'
+    footer: {
+        textAlign: 'center',
+        paddingTop: '8px',
     },
-    pluginBanner: {
-        background: 'linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(217,119,6,0.05) 100%)',
-        border: '1px solid rgba(245,158,11,0.2)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '20px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '16px',
-        color: 'var(--text-primary)'
-    },
-    outlineBtn: {
-        padding: '6px 16px',
-        fontSize: '0.8rem',
-        background: 'transparent',
-        border: '1px solid #10b981',
-        color: '#10b981',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontWeight: 600
-    }
 };
 
-// Add global styles for pulse animation
+// ── Global Animations ──
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
 styleSheet.innerText = `
 @keyframes pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 `;
 document.head.appendChild(styleSheet);

@@ -6,27 +6,21 @@ import DashboardPage from './pages/DashboardPage';
 import SettingsPage from './pages/SettingsPage';
 import AuditPage from './pages/AuditPage';
 import ToolPacksPage from './pages/ToolPacksPage';
-import HomePage from './pages/HomePage';
 import IntegrationsPage from './pages/IntegrationsPage';
 import MyStuffPage from './pages/MyStuffPage';
 import { authAPI } from './services/api';
 
-// Content wrapper that checks the path and renders Sidebar conditionally
+// Content wrapper — Dashboard is the default landing page (no HomePage)
 const AppContent = ({ user, loading, updateUser, sidebarOpen, setSidebarOpen }) => {
     const location = useLocation();
 
-    // Show loading spinner but skip if we are on the homepage
-    if (loading && location.pathname !== '/') {
+    if (loading) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', flexDirection: 'column', background: 'var(--bg-primary)' }}>
                 <div style={{ width: '48px', height: '48px', border: '3px solid var(--border-primary)', borderTopColor: 'var(--accent-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                <span style={{ color: 'var(--text-muted)' }}>Loading SamarthyaBot...</span>
+                <span style={{ color: 'var(--text-muted)', marginTop: '16px' }}>Loading SamarthyaBot...</span>
             </div>
         );
-    }
-
-    if (location.pathname === '/') {
-        return <HomePage />;
     }
 
     return (
@@ -38,7 +32,8 @@ const AppContent = ({ user, loading, updateUser, sidebarOpen, setSidebarOpen }) 
             />
             <main style={{ flex: 1, minHeight: '100vh' }}>
                 <Routes>
-                    <Route path="/dashboard" element={<DashboardPage user={user} />} />
+                    <Route path="/" element={<DashboardPage user={user} />} />
+                    <Route path="/dashboard" element={<Navigate to="/" replace />} />
                     <Route path="/chat" element={<ChatPage user={user} />} />
                     <Route path="/chat/:id" element={<ChatPage user={user} />} />
                     <Route path="/settings" element={<SettingsPage user={user} onUpdate={updateUser} />} />
@@ -46,7 +41,7 @@ const AppContent = ({ user, loading, updateUser, sidebarOpen, setSidebarOpen }) 
                     <Route path="/tools" element={<ToolPacksPage user={user} />} />
                     <Route path="/integrations" element={<IntegrationsPage user={user} />} />
                     <Route path="/my-stuff" element={<MyStuffPage user={user} />} />
-                    <Route path="*" element={<Navigate to="/dashboard" />} />
+                    <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </main>
         </div>

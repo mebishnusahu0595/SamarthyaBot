@@ -16,7 +16,7 @@ const integrationCategories = [
             { name: 'WhatsApp', nameHi: 'व्हाट्सएप', icon: '📱', desc: 'WhatsApp Business Cloud API', status: 'live', tag: '🇮🇳 #1 in India' },
             { name: 'Telegram', nameHi: 'टेलीग्राम', icon: '✈️', desc: 'Bot API integration', status: 'live', tag: 'Active' },
             { name: 'WebChat', nameHi: 'वेबचैट', icon: '💬', desc: 'Browser-based UI (this app)', status: 'live', tag: '' },
-            { name: 'Discord', nameHi: 'डिस्कॉर्ड', icon: '🎮', desc: 'Servers, channels & DMs', status: 'coming', tag: '' },
+            { name: 'Discord', nameHi: 'डिस्कॉर्ड', icon: '🟣', desc: 'Gateway API — servers, channels & DMs', status: 'live', tag: 'New ✨' },
             { name: 'Slack', nameHi: 'स्लैक', icon: '💼', desc: 'Workspace integration', status: 'coming', tag: '' },
             { name: 'Signal', nameHi: 'सिग्नल', icon: '🔒', desc: 'Privacy-focused messaging', status: 'planned', tag: '' },
         ]
@@ -28,9 +28,11 @@ const integrationCategories = [
         items: [
             { name: 'Google Gemini', nameHi: 'गूगल जेमिनी', icon: '✨', desc: 'Gemini 2.5 Flash (Default)', status: 'live', tag: 'Default' },
             { name: 'Ollama (Local)', nameHi: 'ऑलामा', icon: '🏠', desc: 'dolphin3:8b — offline mode', status: 'live', tag: 'Offline' },
-            { name: 'OpenAI', nameHi: 'ओपनएआई', icon: '🤖', desc: 'GPT-4o, GPT-5', status: 'coming', tag: '' },
-            { name: 'Anthropic', nameHi: 'एंथ्रोपिक', icon: '🧠', desc: 'Claude 4 Opus', status: 'planned', tag: '' },
-            { name: 'DeepSeek', nameHi: 'डीपसीक', icon: '🔍', desc: 'DeepSeek V3 & R1', status: 'planned', tag: '' },
+            { name: 'OpenAI', nameHi: 'ओपनएआई', icon: '🤖', desc: 'GPT-4o, GPT-5', status: 'live', tag: '' },
+            { name: 'Anthropic Claude', nameHi: 'एंथ्रोपिक क्लॉड', icon: '🧠', desc: 'Claude Sonnet/Opus (Native API)', status: 'live', tag: 'New ✨' },
+            { name: 'DeepSeek', nameHi: 'डीपसीक', icon: '🔍', desc: 'DeepSeek Chat & Coder', status: 'live', tag: 'New ✨' },
+            { name: 'Qwen', nameHi: 'क्वेन', icon: '🐉', desc: 'Alibaba Qwen Plus', status: 'live', tag: 'New ✨' },
+            { name: 'OpenRouter', nameHi: 'ओपनराउटर', icon: '🌐', desc: '100+ models via single API key', status: 'live', tag: 'New ✨' },
             { name: 'Gemini Vision', nameHi: 'जेमिनी विज़न', icon: '👁️', desc: 'Screen Understanding', status: 'live', tag: 'Vision' },
         ]
     },
@@ -73,7 +75,7 @@ const integrationCategories = [
             { name: 'Voice Input', nameHi: 'वॉइस इनपुट', icon: '🎙️', desc: 'Web Speech API (Hindi/English)', status: 'live', tag: 'Real' },
             { name: 'Text-to-Speech', nameHi: 'टेक्स्ट-टू-स्पीच', icon: '🔊', desc: 'Bot reads responses aloud', status: 'live', tag: 'Real' },
             { name: 'Screen Capture', nameHi: 'स्क्रीन कैप्चर', icon: '📸', desc: 'Upload screenshots for AI analysis', status: 'live', tag: 'Vision' },
-            { name: 'Whisper (Local)', nameHi: 'व्हिस्पर', icon: '🎧', desc: 'Offline voice-to-text', status: 'planned', tag: '' },
+            { name: 'Groq Whisper', nameHi: 'ग्रोक व्हिस्पर', icon: '🎧', desc: 'Telegram voice note transcription (cloud)', status: 'live', tag: 'New ✨' },
         ]
     },
     {
@@ -84,8 +86,19 @@ const integrationCategories = [
             { name: 'Sensitive Data Detection', nameHi: 'सेंसिटिव डेटा', icon: '🛡️', desc: 'PAN, Aadhaar, bank auto-detect', status: 'live', tag: 'Always On' },
             { name: 'Permission System', nameHi: 'अनुमति सिस्टम', icon: '🔑', desc: 'Ask before file/email/browser access', status: 'live', tag: '' },
             { name: 'Audit Log', nameHi: 'ऑडिट लॉग', icon: '📊', desc: 'Full tool execution history', status: 'live', tag: '' },
-            { name: 'Sandbox Mode', nameHi: 'सैंडबॉक्स', icon: '📦', desc: 'Files restricted to ~/SamarthyaBot_Files', status: 'live', tag: '' },
+            { name: 'Workspace Sandbox', nameHi: 'वर्कस्पेस सैंडबॉक्स', icon: '🔒', desc: 'File/exec restricted to workspace folder', status: 'live', tag: 'New ✨' },
             { name: 'Local-First', nameHi: 'लोकल-फर्स्ट', icon: '🏠', desc: 'Ollama for offline private AI', status: 'live', tag: '' },
+        ]
+    },
+    {
+        id: 'automation',
+        title: '⟩ Automation & Agents',
+        subtitle: 'Autonomous operations — heartbeat tasks, sub-agents, and background work.',
+        items: [
+            { name: 'Heartbeat Tasks', nameHi: 'हार्टबीट', icon: '💓', desc: 'Periodic autonomous tasks from HEARTBEAT.md', status: 'live', tag: 'New ✨' },
+            { name: 'Sub-Agent Spawn', nameHi: 'सब-एजेंट', icon: '🚀', desc: 'Non-blocking background agents for long tasks', status: 'live', tag: 'New ✨' },
+            { name: 'Background CRON', nameHi: 'बैकग्राउंड', icon: '🔄', desc: 'Autonomous ReAct planning loops', status: 'live', tag: '' },
+            { name: 'Plugin System', nameHi: 'प्लगइन', icon: '🔌', desc: 'Drop-in .js plugins for new skills', status: 'live', tag: '' },
         ]
     }
 ];

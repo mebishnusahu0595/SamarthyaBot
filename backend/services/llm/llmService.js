@@ -118,7 +118,13 @@ NEVER SAY YOU PERFORMED AN ACTION (like sending an email or saving a file) WITHO
         } else if (provider === 'mistral') {
             return this.chatOpenAICompatible(messages, systemPrompt, user, 'https://api.mistral.ai/v1/chat/completions', process.env.MISTRAL_API_KEY, customModel || 'mistral-large-latest');
         } else if (provider === 'anthropic') {
-            return this.chatGemini(messages, systemPrompt, user, customModel || 'gemini-2.5-flash'); // fallback to Gemini for Anthropic until SDK is added
+            return this.chatAnthropic(messages, systemPrompt, user, customModel || 'claude-sonnet-4-20250514');
+        } else if (provider === 'deepseek') {
+            return this.chatOpenAICompatible(messages, systemPrompt, user, 'https://api.deepseek.com/v1/chat/completions', process.env.DEEPSEEK_API_KEY, customModel || 'deepseek-chat');
+        } else if (provider === 'qwen') {
+            return this.chatOpenAICompatible(messages, systemPrompt, user, 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', process.env.QWEN_API_KEY, customModel || 'qwen-plus');
+        } else if (provider === 'openrouter') {
+            return this.chatOpenRouter(messages, systemPrompt, user, customModel || 'google/gemini-2.5-flash');
         }
 
         return this.chatGemini(messages, systemPrompt, user, customModel || 'gemini-2.5-flash');
@@ -288,6 +294,117 @@ NEVER SAY YOU PERFORMED AN ACTION (like sending an email or saving a file) WITHO
             };
         } catch (error) {
             console.error('Ollama Error:', error.message);
+            return this.getFallbackResponse(messages[messages.length - 1]?.content, user);
+        }
+    }
+
+    /**
+     * Anthropic Claude API (Native Messages API)
+     * Claude uses a different API format than OpenAI
+     */
+    async chatAnthropic(messages, systemPrompt, user = null, modelName = 'claude-sonnet-4-20250514') {
+        try {
+            const apiKey = process.env.ANTHROPIC_API_KEY;
+            if (!apiKey || apiKey === 'dummy') {
+                return this.getFallbackResponse(messages[messages.length - 1]?.content, user);
+            }
+
+            // Claude uses a different message format
+            const claudeMessages = messages
+                .filter(m => m.role !== 'system')
+                .map(m => ({
+                    role: m.role === 'assistant' ? 'assistant' : 'user',
+                    content: m.content
+                }));
+
+            // Ensure first message is from user
+            if (claudeMessages.length === 0 || claudeMessages[0].role !== 'user') {
+                claudeMessages.unshift({ role: 'user', content: 'Hello' });
+            }
+
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': apiKey,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: modelName,
+                    max_tokens: 8192,
+                    system: systemPrompt,
+                    messages: claudeMessages,
+                    temperature: 0.7
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error('Anthropic API Error:', errText);
+                return this.getFallbackResponse(messages[messages.length - 1]?.content, user);
+            }
+
+            const data = await response.json();
+            const textContent = data.content?.find(c => c.type === 'text');
+            return {
+                content: textContent?.text || 'Empty response from Claude',
+                tokensUsed: (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0),
+                model: modelName
+            };
+        } catch (error) {
+            console.error('Anthropic Error:', error.message);
+            return this.getFallbackResponse(messages[messages.length - 1]?.content, user);
+        }
+    }
+
+    /**
+     * OpenRouter API — access 100+ models through a single API key
+     * Uses OpenAI-compatible format with extra headers
+     */
+    async chatOpenRouter(messages, systemPrompt, user = null, modelName = 'google/gemini-2.5-flash') {
+        try {
+            const apiKey = process.env.OPENROUTER_API_KEY;
+            if (!apiKey || apiKey === 'dummy') {
+                return this.getFallbackResponse(messages[messages.length - 1]?.content, user);
+            }
+
+            const apiMessages = [
+                { role: 'system', content: systemPrompt },
+                ...messages.map(m => ({
+                    role: m.role === 'assistant' ? 'assistant' : 'user',
+                    content: m.content
+                }))
+            ];
+
+            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                    'HTTP-Referer': 'https://github.com/mebishnusahu0595/SamarthyaBot',
+                    'X-Title': 'SamarthyaBot'
+                },
+                body: JSON.stringify({
+                    model: modelName,
+                    messages: apiMessages,
+                    temperature: 0.7
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error('OpenRouter API Error:', errText);
+                return this.getFallbackResponse(messages[messages.length - 1]?.content, user);
+            }
+
+            const data = await response.json();
+            return {
+                content: data.choices?.[0]?.message?.content || 'Empty response from OpenRouter',
+                tokensUsed: data.usage?.total_tokens || 0,
+                model: `openrouter:${modelName}`
+            };
+        } catch (error) {
+            console.error('OpenRouter Error:', error.message);
             return this.getFallbackResponse(messages[messages.length - 1]?.content, user);
         }
     }
