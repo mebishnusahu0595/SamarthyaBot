@@ -1,6 +1,6 @@
 {
     "name": "samarthya-bot",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "Privacy-First Local Agentic OS & Command Center",
     "main": "backend/server.js",
     "bin": {
