@@ -333,7 +333,7 @@ SamarthyaBot reads this file every 30 minutes (configurable) and executes each t
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ My checklist -- >> 
 
 - [x] Full RPA Engine (Code → Commit → Deploy)
 - [x] Go Micro-Worker (Live Terminal Streaming)
