@@ -1,17 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="SamarthyaBot - Privacy-first Personal AI Operator built for Indian workflows. Hindi, Hinglish & English support." />
-    <meta name="theme-color" content="#0f0f23" />
-    <link rel="manifest" href="/manifest.json" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>SamarthyaBot - समर्थ्य बोट | Personal AI Operator</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary SEO Meta Tags -->
+  <title>SamarthyaBot — Privacy-First AI Agent OS | Self-Hosted AI Operating System | Made in India</title>
+  <meta name="description"
+    content="SamarthyaBot is a privacy-first, self-hosted AI operating system. Multi-agent RPA engine with Telegram, Discord, browser automation, SSH deployment, encrypted memory, and Indian workflow support (GST, UPI, IRCTC). Supports Gemini, Claude, GPT, Ollama. Free and open-source." />
+  <meta name="keywords"
+    content="SamarthyaBot, AI agent, AI operating system, self-hosted AI, privacy AI, local AI, chatbot, Telegram bot, Discord bot, RPA, robotic process automation, browser automation, Puppeteer, SSH deployment, encrypted memory, Gemini, Claude, GPT, Ollama, DeepSeek, OpenRouter, Indian AI, Hindi AI, GST calculator, UPI, IRCTC, Node.js, React, MongoDB, open source, Made in India" />
+  <meta name="author" content="Bishnu Prasad Sahu" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <link rel="canonical" href="https://github.com/mebishnusahu0595/SamarthyaBot" />
+  <meta name="theme-color" content="#0f0f23" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://github.com/mebishnusahu0595/SamarthyaBot" />
+  <meta property="og:title" content="SamarthyaBot — Privacy-First AI Agent OS | Made in India" />
+  <meta property="og:description"
+    content="Self-hosted multi-agent AI operating system with Telegram, Discord, browser automation, SSH deployment, and Indian workflow support. Supports 9 AI providers including Gemini, Claude, GPT, Ollama (offline). Free and open-source." />
+  <meta property="og:image"
+    content="https://raw.githubusercontent.com/mebishnusahu0595/SamarthyaBot/main/backend/public/logo.png" />
+  <meta property="og:site_name" content="SamarthyaBot" />
+  <meta property="og:locale" content="en_IN" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://github.com/mebishnusahu0595/SamarthyaBot" />
+  <meta name="twitter:title" content="SamarthyaBot — Privacy-First AI Agent OS" />
+  <meta name="twitter:description"
+    content="Self-hosted AI operating system with Telegram, Discord, browser automation, SSH, encrypted memory. 9 AI providers. Free, open-source, Made in India." />
+  <meta name="twitter:image"
+    content="https://raw.githubusercontent.com/mebishnusahu0595/SamarthyaBot/main/backend/public/logo.png" />
+
+  <!-- JSON-LD Structured Data for AI Search Engines (GEO) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SamarthyaBot",
+      "alternateName": ["समर्थ्य बोट", "Samarthya Bot", "SamarthyaBot AI"],
+      "description": "SamarthyaBot is a privacy-first, self-hosted AI operating system built for Indian developers. It features multi-agent RPA automation, browser control via Puppeteer, SSH deployment, encrypted memory, voice transcription, and supports 9 AI providers including Gemini, Claude, GPT, and Ollama (offline).",
+      "url": "https://github.com/mebishnusahu0595/SamarthyaBot",
+      "downloadUrl": "https://www.npmjs.com/package/samarthya-bot",
+      "installUrl": "https://www.npmjs.com/package/samarthya-bot",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "AI Agent, RPA, Automation, Chatbot",
+      "operatingSystem": "Linux, macOS, Windows",
+      "softwareVersion": "2.2.0",
+      "softwareRequirements": "Node.js >= 20.0.0, MongoDB",
+      "programmingLanguage": ["JavaScript", "Go", "React"],
+      "isAccessibleForFree": true,
+      "license": "https://opensource.org/licenses/MIT",
+      "inLanguage": ["en", "hi"],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Bishnu Prasad Sahu",
+        "url": "https://github.com/mebishnusahu0595",
+        "nationality": {
+          "@type": "Country",
+          "name": "India"
+        }
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Bishnu Prasad Sahu"
+      },
+      "datePublished": "2026-02-25",
+      "dateModified": "2026-03-05",
+      "codeRepository": "https://github.com/mebishnusahu0595/SamarthyaBot",
+      "keywords": "AI agent, AI operating system, self-hosted AI, privacy-first AI, local AI, RPA, chatbot, Telegram bot, Discord bot, Puppeteer, SSH deployment, encrypted memory, Gemini, Claude, GPT, Ollama, DeepSeek, Indian AI, Hindi, GST, UPI, Node.js, React, MongoDB, open source, Made in India, samarthya, samarthyabot",
+      "featureList": [
+        "Multi-agent RPA engine — writes code, commits to GitHub, deploys autonomously",
+        "9 AI providers — Gemini, Claude, GPT, Ollama, DeepSeek, Qwen, OpenRouter, Groq, Mistral",
+        "Real browser automation via Puppeteer — scrape, click, navigate",
+        "SSH deployment to remote servers with password or PEM key",
+        "AES-256-CBC encrypted memory in MongoDB",
+        "Telegram and Discord bot integrations",
+        "Voice transcription via Groq/Whisper",
+        "Indian workflow automation — GST, UPI, IRCTC, Hindi/Hinglish",
+        "Drop-in JavaScript plugin system",
+        "Go micro-worker for live terminal streaming",
+        "Workspace security sandbox",
+        "Heartbeat periodic autonomous tasks",
+        "Beautiful React web dashboard with dark theme"
+      ]
+    }
+    </script>
+
+  <!-- FAQ Structured Data for Google & AI Search -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is SamarthyaBot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SamarthyaBot is a privacy-first, self-hosted AI operating system that runs locally on your machine. It combines chatbot capabilities with full RPA (Robotic Process Automation) — meaning it can write code, deploy servers, control browsers, send emails, and automate Indian workflows like GST and UPI."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I install SamarthyaBot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Install SamarthyaBot with a single NPM command: npm install -g samarthya-bot. Then run 'samarthya onboard' for guided setup. Requires Node.js 20+ and MongoDB."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is SamarthyaBot free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, SamarthyaBot is 100% free and open-source under the MIT license. It supports free AI providers like Google Gemini and Ollama (fully offline)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does SamarthyaBot work offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! Using Ollama as the AI provider, SamarthyaBot runs 100% offline with zero data leakage. No internet connection required after initial setup."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What AI models does SamarthyaBot support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SamarthyaBot supports 9 AI providers with 20+ models: Google Gemini, Ollama (local), Anthropic Claude, OpenAI GPT, DeepSeek, Qwen, OpenRouter (100+ models), Groq, and Mistral."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does SamarthyaBot support Hindi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! SamarthyaBot has first-class support for Hindi, Hinglish, and English. It's built specifically for Indian developers with Indian workflow support including GST, UPI, and IRCTC."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my data safe with SamarthyaBot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely. SamarthyaBot runs entirely on your local machine. All memories are encrypted with AES-256-CBC. Dangerous commands are blocked by regex blacklists. Your data never leaves your device."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is SamarthyaBot different from ChatGPT?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Unlike ChatGPT, SamarthyaBot runs locally on your machine, can execute real actions (deploy code, send emails, control browsers), supports Indian workflows (GST, UPI), works offline via Ollama, and your data never leaves your device."
+          }
+        }
+      ]
+    }
+    </script>
+
+  <!-- Fonts & PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

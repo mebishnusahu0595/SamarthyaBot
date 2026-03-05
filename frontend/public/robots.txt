@@ -1,0 +1,32 @@
+# SamarthyaBot Robots.txt
+# Privacy-First AI Agent OS - https://github.com/mebishnusahu0595/SamarthyaBot
+
+User-agent: *
+Allow: /
+
+# Allow all major search engines and AI crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://github.com/mebishnusahu0595/SamarthyaBot
