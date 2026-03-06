@@ -270,7 +270,8 @@ const toolDefinitions = {
                 // Create subdirectories if needed
                 await fs.mkdir(path.dirname(filePath), { recursive: true });
 
-                await fs.writeFile(filePath, args.content, 'utf-8');
+                const argContent = args.content ?? args.data ?? args.body ?? args.text ?? "";
+                await fs.writeFile(filePath, String(argContent), 'utf-8');
                 const stat = await fs.stat(filePath);
 
                 return {
@@ -502,7 +503,7 @@ const toolDefinitions = {
     // ─────────── DEVOPS / STREAMING EXECUTION (Go Worker Integration) ───────────
     devops_execute_stream: {
         name: 'devops_execute_stream',
-        description: 'Run long or complex shell commands (like npm install, git push, vercel deploy) and stream the output back. Required for any heavy DevOps/Auto-Coder tasks. Uses the ultra-fast Go micro-worker.',
+        description: `Run long or complex shell commands (like npm install, git push, vercel deploy) and stream the output back. Required for any heavy DevOps/Auto-Coder tasks. Uses the ultra-fast Go micro-worker. Host OS: ${os.type()} ${os.release()}`,
         descriptionHi: 'लाइव शेल कमांड चलाएं',
         riskLevel: 'critical',
         category: 'system',
@@ -548,7 +549,7 @@ const toolDefinitions = {
     // ─────────── LEGACY RUN COMMAND (Kept for instant small commands) ───────────
     run_command: {
         name: 'run_command',
-        description: 'Run basic, instant shell commands natively. For long-running deploying/building, use devops_execute_stream instead.',
+        description: `Run basic, instant shell commands natively. Host OS: ${os.type()} ${os.release()}. (Note: To open URLs/files, use 'start' for Windows, 'open' for macOS, 'xdg-open' for Linux).`,
         descriptionHi: 'शेल कमांड चलाएं',
         riskLevel: 'critical',
         category: 'system',

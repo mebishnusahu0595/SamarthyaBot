@@ -17,13 +17,13 @@ module.exports = {
         developer: {
             name: '👨‍💻 Developer Pack',
             nameHi: '👨‍💻 डेवलपर पैक',
-            tools: ['web_search', 'file_read', 'file_write', 'file_list', 'calculate', 'send_email', 'run_command', 'system_info', 'open_url', 'note_take', 'reminder_set', 'capture_desktop_screenshot', 'schedule_background_task', 'simulate_task'],
+            tools: ['web_search', 'file_read', 'file_write', 'file_list', 'calculate', 'send_email', 'run_command', 'system_info', 'browser_action', 'ssh_deploy', 'note_take', 'reminder_set', 'capture_desktop_screenshot', 'schedule_background_task', 'simulate_task'],
             description: 'Shell commands, file ops, system info, browser control'
         },
         personal: {
             name: '🏠 Personal Pack',
             nameHi: '🏠 पर्सनल पैक',
-            tools: ['web_search', 'reminder_set', 'note_take', 'calculate', 'weather_info', 'file_read', 'file_write', 'file_list', 'calendar_schedule', 'upi_generate', 'send_email', 'system_info', 'open_url', 'run_command', 'capture_desktop_screenshot', 'schedule_background_task', 'simulate_task'],
+            tools: ['web_search', 'reminder_set', 'note_take', 'calculate', 'weather_info', 'file_read', 'file_write', 'file_list', 'calendar_schedule', 'upi_generate', 'send_email', 'system_info', 'browser_action', 'run_command', 'capture_desktop_screenshot', 'schedule_background_task', 'simulate_task'],
             description: 'Weather, notes, reminders, UPI, email, files'
         }
     },
