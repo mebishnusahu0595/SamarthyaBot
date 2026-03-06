@@ -1,6 +1,6 @@
 {
     "name": "samarthya-bot",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "description": "SamarthyaBot — Privacy-First Local Agentic AI Operating System. Self-hosted multi-agent RPA engine with Telegram, Discord, Web Dashboard, Puppeteer browser control, SSH deployment, encrypted memory, voice transcription, and Indian workflow automation (GST, UPI, IRCTC). Supports Gemini, Claude, GPT, Ollama, DeepSeek, Qwen, OpenRouter. Made in India.",
     "main": "backend/server.js",
     "bin": {
